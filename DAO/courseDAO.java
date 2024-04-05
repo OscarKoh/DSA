@@ -4,7 +4,10 @@ import adt.ListInterface;
 import entity.Course;
 import java.io.*;
 import adt.ArrayList;
-
+/**
+ *
+ * @author Loo Suk Zhen
+ */
 public class courseDAO {
 
     private final String fileName;
