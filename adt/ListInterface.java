@@ -32,27 +32,6 @@ public interface ListInterface<T> {
      */
     public void clear();
 
-    /**
-     * Task: Replaces the entry at a given position in the list.
-     *
-     * @param givenPosition an integer that indicates the position of the entry
-     * to be replaced
-     * @param newEntry the object that will replace the entry at the position
-     * givenPosition
-     * @return true if the replacement occurs, or false if either the list is
-     * empty, givenPosition < 1, or givenPosition > getNumberOfEntries()
-     */
-    public boolean replace(int givenPosition, T newEntry);
-
-    /**
-     * Task: Retrieves the entry at a given position in the list.
-     *
-     * @param givenPosition an integer that indicates the position of the
-     * desired entry
-     * @return a reference to the indicated entry or null, if either the list is
-     * empty, givenPosition < 1, or givenPosition > getNumberOfEntries()
-     */
-    public T getEntry(int givenPosition);
 
     /**
      * Task: Sees whether the list contains a given entry.
