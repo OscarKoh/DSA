@@ -184,24 +184,31 @@ public class ArrayList<T> implements ListInterface<T>, Serializable {
     }
 
     // Inner class for iterator implementation
-    private class ArrayListIterator implements Iterator<T> {
+    @Override
+public Iterator<T> getIterator() {
+    return new ArrayListIterator();
+}
 
-        private int nextIndex = 0;
+// Inner class for iterator implementation
+private class ArrayListIterator implements Iterator<T> {
+    private int nextIndex = 0;
 
-        @Override
-        public boolean hasNext() {
-            return nextIndex <= backIndex;
+    @Override
+    public boolean hasNext() {
+        return nextIndex < numberOfEntries; // Check if there are more elements to iterate
+    }
+
+    @Override
+    public T next() {
+        if (hasNext()) {
+            T nextEntry = array[nextIndex]; // Get the next element
+            nextIndex++; // Move to the next index
+            return nextEntry;
+        } else {
+            throw new NoSuchElementException(); // Throw exception if there are no more elements
         }
+    }
+}
 
-        @Override
-        public T next() {
-            if (hasNext()) {
-                T nextEntry = array[nextIndex];
-                nextIndex++; // advance iterator
-                return nextEntry;
-            } else {
-                return null;
-            }
-        }
     }
 }
