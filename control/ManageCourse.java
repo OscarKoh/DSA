@@ -18,12 +18,12 @@ public class ManageCourse {
         return courseList = courseDao.retrieveFromFile();
     }
 
-    public static boolean addCourse(String courseCode, String courseName, String status, int creditHour, ArrayList<Course.CourseType> courseTypes, double fee) {
+    public static boolean addCourse(String courseCode, String courseName, int creditHour, ArrayList<Course.CourseType> courseTypes, double fee) {
         if (checkExistsInCourse(courseCode, courseName)) {
             System.out.println("This course already exists.\n");
             return false;
         }
-        Course course = new Course(courseCode.toUpperCase(), courseName, courseTypes, status, creditHour, fee);
+        Course course = new Course(courseCode.toUpperCase(), courseName, courseTypes,, creditHour, fee);
         courseList.add(course);
 //        System.out.println("You are successfully added a new course.");
         courseDao.saveToFile(courseList);
