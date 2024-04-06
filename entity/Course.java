@@ -16,16 +16,14 @@ public class Course implements Serializable {
     private String name;
     private ListInterface<Programme> programmesList = new ArrayList<>();
     private ArrayList<CourseType> courseTypes = new ArrayList<>();
-    private String status;
     private int creditHour;
     private double fee;
     private ListInterface<Student> studentList = new ArrayList<>();
     private ListInterface<Tutor> tutorList = new ArrayList<>();
 
-    public Course(String code, String name, ArrayList<CourseType> courseTypes, String status, int creditHour, double fee) {
+    public Course(String code, String name, ArrayList<CourseType> courseTypes, int creditHour, double fee) {
         this.code = code;
         this.name = name;
-        this.status = status;
         this.creditHour = creditHour;
         this.courseTypes = courseTypes;
         this.fee = fee;
@@ -81,10 +79,6 @@ public class Course implements Serializable {
         return code;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
     public int getCreditHour() {
         return creditHour;
     }
@@ -100,11 +94,7 @@ public class Course implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
+    
     public void setCreditHour(int creditHour) {
         this.creditHour = creditHour;
     }
@@ -134,10 +124,9 @@ public class Course implements Serializable {
         }
         return String.format("Course Code      : %s\n"
                 + "Course Name      : %s\n"
-                + "Course Status    : %s\n"
                 + "Course Type      : %s\n"
                 + "Credit Hour      : %s\n"
-                + "Course Fee       : %.2f\n", code, name, status, courseTypesString.toString(), creditHour, fee);
+                + "Course Fee       : %.2f\n", code, name, courseTypesString.toString(), creditHour, fee);
     }
 
 }
