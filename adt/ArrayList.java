@@ -20,8 +20,6 @@ public class ArrayList<T> implements ListInterface<T>, Serializable {
     private T[] array;
     private int numberOfEntries;
     private static final int DEFAULT_CAPACITY = 5;
-    private final static int frontIndex = 0;
-    private int backIndex;
 
     public ArrayList() {
         this(DEFAULT_CAPACITY);
@@ -169,11 +167,6 @@ public class ArrayList<T> implements ListInterface<T>, Serializable {
     }
 
     @Override
-    public Iterator<T> getIterator() {
-        return new ArrayListIterator();
-    }
-
-    @Override
     public boolean replace(int givenPosition, T newEntry) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -183,32 +176,30 @@ public class ArrayList<T> implements ListInterface<T>, Serializable {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    @Override
+    public Iterator<T> getIterator() {
+        return new ArrayListIterator();
+    }
+
     // Inner class for iterator implementation
-    @Override
-public Iterator<T> getIterator() {
-    return new ArrayListIterator();
-}
+    private class ArrayListIterator implements Iterator<T> {
 
-// Inner class for iterator implementation
-private class ArrayListIterator implements Iterator<T> {
-    private int nextIndex = 0;
+        private int nextIndex = 0;
 
-    @Override
-    public boolean hasNext() {
-        return nextIndex < numberOfEntries; // Check if there are more elements to iterate
-    }
-
-    @Override
-    public T next() {
-        if (hasNext()) {
-            T nextEntry = array[nextIndex]; // Get the next element
-            nextIndex++; // Move to the next index
-            return nextEntry;
-        } else {
-            throw new NoSuchElementException(); // Throw exception if there are no more elements
+        @Override
+        public boolean hasNext() {
+            return nextIndex < numberOfEntries; // Check if there are more elements to iterate
         }
-    }
-}
 
+        @Override
+        public T next() {
+            if (hasNext()) {
+                T nextEntry = array[nextIndex]; // Get the next element
+                nextIndex++; // Move to the next index
+                return nextEntry;
+            } else {
+                throw new NoSuchElementException(); // Throw exception if there are no more elements
+            }
+        }
     }
 }
