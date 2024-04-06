@@ -167,16 +167,6 @@ public class ArrayList<T> implements ListInterface<T>, Serializable {
     }
 
     @Override
-    public boolean replace(int givenPosition, T newEntry) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public T getEntry(int givenPosition) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
     public Iterator<T> getIterator() {
         return new ArrayListIterator();
     }
