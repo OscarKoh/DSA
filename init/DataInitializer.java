@@ -64,7 +64,7 @@ public class DataInitializer {
         ArrayList<Course.CourseType>[] courseTypeArrays = new ArrayList[courseCodes.length];
         for (int i = 0; i < courseCodes.length; i++) {
             courseTypeArrays[i] = new ArrayList<>(); // Initialize ArrayList
-            if (i < 5) {
+            if (i <= 5) {
                 // Courses with lecture, tutorial, and practical
                 courseTypeArrays[i].add(Course.CourseType.LECTURE);
                 courseTypeArrays[i].add(Course.CourseType.TUTORIAL);
