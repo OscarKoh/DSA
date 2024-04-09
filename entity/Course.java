@@ -5,6 +5,7 @@ import Student.Student;
 import adt.ArrayList;
 import adt.ListInterface;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 /**
  *
@@ -94,7 +95,7 @@ public class Course implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public void setCreditHour(int creditHour) {
         this.creditHour = creditHour;
     }
@@ -111,6 +112,39 @@ public class Course implements Serializable {
         }
 
         return ((Course) object).code.equals(code);
+    }
+
+    public int compareTo(Course anotherCourse, String... attributeNames) throws Exception {
+        int result = 0;
+
+        for (String attributeName : attributeNames) {
+            try {
+                Field field = getClass().getDeclaredField(attributeName);
+
+                if (!Comparable.class.isAssignableFrom(field.getType())) {
+                    if (attributeName.equals("fee")) {
+                        double thisFee = this.fee;
+                        double otherFee = anotherCourse.fee;
+                        result = Double.compare(thisFee, otherFee);
+                        if (result != 0) {
+                            return result; // Return comparison result if fees are not equal
+                        }
+                    } else {
+                        throw new IllegalArgumentException("Attribute is not comparable: " + attributeName);
+                    }
+                } else {
+                    result = ((Comparable<Object>) field.get(this))
+                            .compareTo((Comparable<Object>) field.get(anotherCourse));
+                    if (result != 0) {
+                        return result; // Return comparison result if attributes are not equal
+                    }
+                }
+            } catch (NoSuchFieldException e) {
+                throw new IllegalArgumentException("Invalid attribute name: " + attributeName, e);
+            }
+        }
+
+        return result; // All attributes are equal
     }
 
     public String toString() {
