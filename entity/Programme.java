@@ -4,6 +4,7 @@ import TutorialGrp.TutorialGrp;
 import adt.ArrayList;
 import adt.ListInterface;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 /**
  *
@@ -83,21 +84,20 @@ public class Programme implements Serializable {
     }
 
     public boolean addCourse(Course course) {
-        if (courseList.add(course)) {
-            creditHour += course.getCreditHour();
-            return true;
-        }
-
-        return false;
+        courseList.add(course);
+        creditHour += course.getCreditHour();
+        return true;
     }
 
-    public boolean removeCourse(Course course) {
-        if (courseList.remove(course)) {
-            creditHour -= course.getCreditHour();
-            return true;
+    public boolean removeCourse(int courseNum) {
+        Course courseToRemove = courseList.get(courseNum);
+        if (courseToRemove != null) {
+            courseList.remove(courseNum);
+            creditHour -= courseToRemove.getCreditHour(); // Update credit hour
+            return true; // Return true if removal was successful
         }
 
-        return false;
+        return false; // Return false if removal failed
     }
 
     @Override
@@ -107,6 +107,31 @@ public class Programme implements Serializable {
         }
 
         return ((Programme) o).getProgrammeCode().equals(programmeCode);
+    }
+
+   public int compareTo(Programme anotherProgramme, String... attributeNames) throws Exception {
+        int result = 0;
+
+        for (String attributeName : attributeNames) {
+            try {
+                Field field = getClass().getDeclaredField(attributeName);
+
+                if (!Comparable.class.isAssignableFrom(field.getType())) {
+                    throw new IllegalArgumentException("Attribute is not comparable!");
+                }
+
+                result = ((Comparable<Object>) field.get(this))
+                    .compareTo((Comparable<Object>) field.get(anotherProgramme));
+
+                if (result != 0) {
+                    return result; // Attributes are not equal, return comparison result
+                }
+            } catch (NoSuchFieldException e) {
+                throw new IllegalArgumentException("Invalid attribute name: " + attributeName, e);
+            }
+        }
+
+        return result; // All attributes are equal
     }
 
     @Override
