@@ -4,10 +4,9 @@ import adt.ListInterface;
 import entity.Course;
 import java.io.*;
 import adt.ArrayList;
-/**
- *
- * @author Loo Suk Zhen
- */
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class courseDAO {
 
     private final String fileName;
@@ -16,24 +15,32 @@ public class courseDAO {
         this.fileName = fileName;
     }
 
-    public void saveToFile(ListInterface<Course> courseList) {
-        try (ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream(fileName))) {
+     public void saveToFile(ListInterface<Course> courseList) {
+        File file = new File(fileName);
+        try {
+            if (!file.exists()) {
+                file.createNewFile(); // Create a new file if it doesn't exist
+            }
+            ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream(file));
             ooStream.writeObject(courseList);
-            System.out.println("Data saved successfully.");
+            ooStream.close();
         } catch (IOException ex) {
-            System.err.println("Error saving data to file: " + ex.getMessage());
+            Logger.getLogger(courseDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("\nCannot save to file");
         }
     }
 
     public ListInterface<Course> retrieveFromFile() {
         ListInterface<Course> courseList = new ArrayList<>();
-        try (ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream(fileName))) {
+        File file = new File(fileName);
+        try (ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream(file))) {
             courseList = (ArrayList<Course>) oiStream.readObject();
-            System.out.println("Data retrieved successfully.");
         } catch (FileNotFoundException ex) {
-            System.err.println("File not found: " + ex.getMessage());
+            Logger.getLogger(courseDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("\nNo such file.");
         } catch (IOException | ClassNotFoundException ex) {
-            System.err.println("Error reading data from file: " + ex.getMessage());
+            Logger.getLogger(courseDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("\nError reading from file.");
         }
         return courseList;
     }
