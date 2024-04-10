@@ -69,7 +69,7 @@ public class DataInitializer {
                 courseTypeArrays[i].add(Course.CourseType.LECTURE);
                 courseTypeArrays[i].add(Course.CourseType.TUTORIAL);
                 courseTypeArrays[i].add(Course.CourseType.PRACTICAL);
-            } else if (i == 6 && i == 7) {
+            } else if (i == 6 || i == 7) {
                 // Courses with lecture and tutorial
                 courseTypeArrays[i].add(Course.CourseType.LECTURE);
                 courseTypeArrays[i].add(Course.CourseType.TUTORIAL);
