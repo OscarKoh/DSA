@@ -1,213 +1,157 @@
 import java.util.Scanner;
-import java.util.List;
 
 public class Main {
+    private static Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         Programme programme = new Programme(201, "Computer Science");
 
-        while (true) {
-            clearScreen();
-            System.out.println("\nChoose an action:");
+        boolean exit = false;
+        while (!exit) {
+            System.out.println("\nTutorial Group Management System");
             System.out.println("1. Add Tutorial Group");
             System.out.println("2. Remove Tutorial Group");
-            System.out.println("3. List Tutorial Groups");
-            System.out.println("4. Add Student");
-            System.out.println("5. Remove Student");
-            System.out.println("6. List Students in a Tutorial Group");
-            System.out.println("7. Change Tutorial Group for Student");
-            System.out.println("8. Merge Tutorial Groups");
-            System.out.println("9. List All Students in the Programme");
-            System.out.println("10. Generate Summary Report");
-            System.out.println("0. Exit");
-
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            System.out.println("3. List All Tutorial Groups");
+            System.out.println("4. Merge Tutorial Groups");
+            System.out.println("5. Generate Summary Reports");
+            System.out.println("6. Add Student to Tutorial Group");
+            System.out.println("7. Remove Student from Tutorial Group");
+            System.out.println("8. Change Tutorial Group for a Student");
+            System.out.println("9. List All Students in Tutorial Group");
+            System.out.println("10. List All Students in Programme");
+            System.out.println("11. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = getUserChoice();
 
             switch (choice) {
                 case 1:
-                    clearScreen();
-                    addTutorialGroup(programme, scanner);
+                    addTutorialGroup(programme);
                     break;
                 case 2:
-                    clearScreen();
-                    removeTutorialGroup(programme, scanner);
+                    removeTutorialGroup(programme);
                     break;
                 case 3:
-                    clearScreen();
-                    listTutorialGroups(programme);
+                    listAllTutorialGroups(programme);
                     break;
                 case 4:
-                    clearScreen();
-                    addStudent(programme, scanner);
+                    mergeTutorialGroups(programme);
                     break;
                 case 5:
-                    clearScreen();
-                    removeStudent(programme, scanner);
+                    generateSummaryReports(programme);
                     break;
                 case 6:
-                    clearScreen();
-                    listStudentsInTutorialGroup(programme, scanner);
+                    addStudentToTutorialGroup(programme);
                     break;
                 case 7:
-                    clearScreen();
-                    changeTutorialGroupForStudent(programme, scanner);
+                    removeStudentFromTutorialGroup(programme);
                     break;
                 case 8:
-                    clearScreen();
-                    mergeTutorialGroups(programme, scanner);
+                    changeTutorialGroupForStudent(programme);
                     break;
                 case 9:
-                    clearScreen();
-                    listAllStudentsInProgramme(programme);
+                    listAllStudentsInTutorialGroup(programme);
                     break;
                 case 10:
-                    clearScreen();
-                    generateSummaryReport(programme);
+                    listAllStudentsInProgramme(programme);
                     break;
-                case 0:
-                    clearScreen();
+                case 11:
+                    exit = true;
                     System.out.println("Exiting...");
-                    return;
+                    break;
                 default:
-                    System.out.println("Invalid choice. Please enter a number between 0 and 10.");
+                    System.out.println("Invalid choice. Please try again.");
             }
         }
+        scanner.close();
     }
 
-    private static void addTutorialGroup(Programme programme, Scanner scanner) {
-        System.out.print("Enter Tutorial Group ID: ");
-        int groupId = scanner.nextInt();
+    private static int getUserChoice() {
+        int choice = 0;
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+                validInput = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                System.out.print("Enter your choice: ");
+            }
+        }
+        return choice;
+    }
+
+    private static void addTutorialGroup(Programme programme) {
+        System.out.print("Enter tutorial group ID: ");
+        int groupId = getUserInputInt();
         scanner.nextLine(); // Consume newline
-        System.out.print("Enter Tutorial Group Name: ");
+        System.out.print("Enter tutorial group name: ");
         String groupName = scanner.nextLine();
-        programme.addTutorialGroup(new TutorialGroup(groupId, groupName));
-        System.out.println("Tutorial Group added successfully.");
+        TutorialGroup tutorialGroup = new TutorialGroup(groupId, groupName);
+        programme.addTutorialGroup(tutorialGroup);
+        System.out.println("Tutorial group added successfully.");
     }
 
-    private static void removeTutorialGroup(Programme programme, Scanner scanner) {
-        System.out.print("Enter ID of Tutorial Group to remove: ");
-        int groupId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        for (TutorialGroup group : programme.listTutorialGroups()) {
-            if (group.getGroupId() == groupId) {
-                // Assuming 'group' is a TutorialGroup object
-                programme.removeTutorialGroup(group.getGroupId());
-                System.out.println("Tutorial Group removed successfully.");
-                return;
-            }
-        }
-        System.out.println("Tutorial Group not found.");
+    private static void removeTutorialGroup(Programme programme) {
+        System.out.print("Enter tutorial group ID to remove: ");
+        int groupId = getUserInputInt();
+        programme.removeTutorialGroup(groupId);
     }
 
-    private static void listTutorialGroups(Programme programme) {
-        List<TutorialGroup> groups = programme.listTutorialGroups();
-        System.out.println("\nList of Tutorial Groups:");
-        for (TutorialGroup group : groups) {
+    private static void listAllTutorialGroups(Programme programme) {
+        MyArrayList<TutorialGroup> groups = programme.listTutorialGroups();
+        System.out.println("All Tutorial Groups:");
+        for (int i = 0; i < groups.size(); i++) {
+            TutorialGroup group = groups.get(i);
             System.out.println("ID: " + group.getGroupId() + ", Name: " + group.getGroupName());
         }
     }
 
-    private static void addStudent(Programme programme, Scanner scanner) {
-        System.out.print("Enter Student ID: ");
-        int studentId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        System.out.print("Enter Student Name: ");
-        String studentName = scanner.nextLine();
-        Student student = new Student(studentId, studentName);
+    private static void mergeTutorialGroups(Programme programme) {
+        programme.mergeTutorialGroups();
+    }
 
-        System.out.print("Enter Tutorial Group ID to add the student to: ");
-        int groupId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+    private static void generateSummaryReports(Programme programme) {
+        System.out.println("Generate Summary Reports");
+        System.out.println("1. Students Summary Report");
+        System.out.println("2. Subjects Summary Report");
+        System.out.print("Enter your choice: ");
+        int reportChoice = getUserChoice();
 
-        TutorialGroup targetGroup = findTutorialGroupById(programme, groupId);
-        if (targetGroup != null) {
-            targetGroup.addStudent(student);
-            System.out.println("Student added to Tutorial Group successfully.");
+        switch (reportChoice) {
+            case 1:
+                programme.generateStudentsSummaryReport();
+                break;
+            case 2:
+                programme.generateSubjectsSummaryReport();
+                break;
+            default:
+                System.out.println("Invalid choice.");
+        }
+    }
+
+    private static void addStudentToTutorialGroup(Programme programme) {
+        System.out.print("Enter tutorial group ID: ");
+        int groupId = getUserInputInt();
+        scanner.nextLine(); // Consume newline
+        TutorialGroup group = findTutorialGroup(programme, groupId);
+        if (group != null) {
+            System.out.print("Enter student ID: ");
+            int studentId = getUserInputInt();
+            scanner.nextLine(); // Consume newline
+            System.out.print("Enter student name: ");
+            String studentName = scanner.nextLine();
+            Student student = new Student(studentId, studentName);
+            group.addStudent(student);
+            System.out.println("Student added to tutorial group successfully.");
         } else {
-            System.out.println("Tutorial Group not found.");
+            System.out.println("Tutorial group not found.");
         }
     }
 
-    private static void removeStudent(Programme programme, Scanner scanner) {
-        System.out.print("Enter Student ID: ");
-        int studentId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-
-        outerLoop:
-        for (TutorialGroup group : programme.listTutorialGroups()) {
-            for (Student student : group.listStudents()) {
-                if (student.getStudentId() == studentId) {
-                    group.removeStudent(student);
-                    System.out.println("Student removed from Tutorial Group successfully.");
-                    return;
-                }
-            }
-        }
-        System.out.println("Student not found.");
-    }
-
-    private static void listStudentsInTutorialGroup(Programme programme, Scanner scanner) {
-        System.out.print("Enter Tutorial Group ID: ");
-        int groupId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-
-        TutorialGroup targetGroup = findTutorialGroupById(programme, groupId);
-        if (targetGroup != null) {
-            List<Student> students = targetGroup.listStudents();
-            System.out.println("\nStudents in Tutorial Group " + targetGroup.getGroupName() + ":");
-            for (Student student : students) {
-                System.out.println("ID: " + student.getStudentId() + ", Name: " + student.getStudentName());
-            }
-        } else {
-            System.out.println("Tutorial Group not found.");
-        }
-    }
-
-    private static void changeTutorialGroupForStudent(Programme programme, Scanner scanner) {
-        System.out.print("Enter Student ID: ");
-        int studentId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-
-        System.out.print("Enter new Tutorial Group ID: ");
-        int newGroupId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-
-        TutorialGroup newGroup = findTutorialGroupById(programme, newGroupId);
-        if (newGroup == null) {
-            System.out.println("New Tutorial Group not found.");
-            return;
-        }
-
-        outerLoop:
-        for (TutorialGroup group : programme.listTutorialGroups()) {
-            for (Student student : group.listStudents()) {
-                if (student.getStudentId() == studentId) {
-                    group.removeStudent(student);
-                    newGroup.addStudent(student);
-                    System.out.println("Student's Tutorial Group changed successfully.");
-                    return;
-                }
-            }
-        }
-        System.out.println("Student not found.");
-    }
-
-    private static void mergeTutorialGroups(Programme programme, Scanner scanner) {
-        // Not implemented in this example
-        System.out.println("Merge Tutorial Groups: Functionality not implemented.");
-    }
-
-    private static void listAllStudentsInProgramme(Programme programme) {
-        List<Student> allStudents = programme.listAllStudents();
-        System.out.println("\nAll students in the programme:");
-        for (Student student : allStudents) {
-            System.out.println("ID: " + student.getStudentId() + ", Name: " + student.getStudentName());
-        }
-    }
-
-    private static TutorialGroup findTutorialGroupById(Programme programme, int groupId) {
-        for (TutorialGroup group : programme.listTutorialGroups()) {
+    private static TutorialGroup findTutorialGroup(Programme programme, int groupId) {
+        MyArrayList<TutorialGroup> groups = programme.listTutorialGroups();
+        for (int i = 0; i < groups.size(); i++) {
+            TutorialGroup group = groups.get(i);
             if (group.getGroupId() == groupId) {
                 return group;
             }
@@ -215,24 +159,78 @@ public class Main {
         return null;
     }
 
-    private static void generateSummaryReport(Programme programme) {
-        System.out.println("\nSummary Report:");
-        List<TutorialGroup> groups = programme.listTutorialGroups();
-        for (TutorialGroup group : groups) {
-            List<Student> students = group.listStudents();
-            System.out.println("Tutorial Group: " + group.getGroupName() + " (ID: " + group.getGroupId() + ")");
-            System.out.println("Number of Students: " + students.size());
-            System.out.println("Students:");
-            for (Student student : students) {
-                System.out.println("ID: " + student.getStudentId() + ", Name: " + student.getStudentName());
+    private static void removeStudentFromTutorialGroup(Programme programme) {
+        System.out.print("Enter tutorial group ID: ");
+        int groupId = getUserInputInt();
+        scanner.nextLine(); // Consume newline
+        TutorialGroup group = findTutorialGroup(programme, groupId);
+        if (group != null) {
+            System.out.print("Enter student ID to remove: ");
+            int studentId = getUserInputInt();
+            scanner.nextLine(); // Consume newline
+            MyArrayList<Student> students = group.listStudents();
+            for (int i = 0; i < students.size(); i++) {
+                Student student = students.get(i);
+                if (student.getStudentId() == studentId) {
+                    group.removeStudent(student);
+                    System.out.println("Student removed from tutorial group successfully.");
+                    return;
+                }
             }
-            System.out.println();
+            System.out.println("Student not found in the tutorial group.");
+        } else {
+            System.out.println("Tutorial group not found.");
         }
     }
-    
-    public static void clearScreen() {
-    System.out.print("\033[H\033[2J");
-    System.out.flush();
+
+    private static void changeTutorialGroupForStudent(Programme programme) {
+        System.out.println("Change Tutorial Group for a Student");
+        System.out.print("Enter student ID: ");
+        int studentId = getUserInputInt();
+        scanner.nextLine(); // Consume newline
+        System.out.print("Enter new tutorial group ID: ");
+        int newGroupId = getUserInputInt();
+        scanner.nextLine(); // Consume newline
+        programme.changeTutorialGroupForStudent(studentId, newGroupId);
     }
 
+    private static void listAllStudentsInTutorialGroup(Programme programme) {
+        System.out.print("Enter tutorial group ID: ");
+        int groupId = getUserInputInt();
+        scanner.nextLine(); // Consume newline
+        TutorialGroup group = findTutorialGroup(programme, groupId);
+        if (group != null) {
+            MyArrayList<Student> students = group.listStudents();
+            System.out.println("Students in Tutorial Group " + group.getGroupName() + ":");
+            for (int i = 0; i < students.size(); i++) {
+                Student student = students.get(i);
+                System.out.println("ID: " + student.getStudentId() + ", Name: " + student.getStudentName());
+            }
+        } else {
+            System.out.println("Tutorial group not found.");
+        }
+    }
+
+    private static void listAllStudentsInProgramme(Programme programme) {
+        MyArrayList<Student> allStudents = programme.listAllStudents();
+        System.out.println("All Students in Programme:");
+        for (int i = 0; i < allStudents.size(); i++) {
+            Student student = allStudents.get(i);
+            System.out.println("ID: " + student.getStudentId() + ", Name: " + student.getStudentName());
+        }
+    }
+
+    private static int getUserInputInt() {
+        int input = 0;
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+                validInput = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter an integer.");
+            }
+        }
+        return input;
+    }
 }
