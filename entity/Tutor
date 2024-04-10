@@ -1,0 +1,46 @@
+package entity;
+
+import adt.ArrayList;
+import adt.ListInterface;
+import java.io.Serializable;
+
+public class Tutor implements Serializable {
+    private String tutorName;
+    private String tutorType;
+    private ListInterface<Course> coursesList;
+
+    // Constructor
+    public Tutor(String tutorName, String tutorType) {
+        this.tutorName = tutorName;
+        this.tutorType = tutorType;
+        this.coursesList = new ArrayList<>();
+    }
+
+    // Getter and Setter for tutor name
+    public String getTutorName() {
+        return tutorName;
+    }
+
+    public void setTutorName(String tutorName) {
+        this.tutorName = tutorName;
+    }
+
+    // Getter and Setter for tutor type
+    public String getTutorType() {
+        return tutorType;
+    }
+
+    public void setTutorType(String tutorType) {
+        this.tutorType = tutorType;
+    }
+
+    // Method to add a course to the tutor's list of courses
+    public void addCourse(Course course) {
+        coursesList.add(course);
+    }
+
+    // Method to retrieve the list of courses for the tutor
+    public ListInterface<Course> getCourses() {
+        return coursesList;
+    }
+}
