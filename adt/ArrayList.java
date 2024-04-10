@@ -107,7 +107,7 @@ public class ArrayList<T> implements ListInterface<T>, Serializable {
     }
 
     @Override
-    public void mergeSets(ListInterface<T> anotherList) {
+    public void mergeLists(ListInterface<T> anotherList) {
         Iterator<T> iterator = anotherList.getIterator();
         while (iterator.hasNext()) {
             T item = iterator.next();
