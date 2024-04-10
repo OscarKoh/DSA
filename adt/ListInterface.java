@@ -14,7 +14,7 @@ public interface ListInterface<T> {
 
     public Iterator<T> getIterator();
 
-    public void mergeLists(ListInterface<T> anotherSet);
+    public void mergeSets(ListInterface<T> anotherSet);
 
     public boolean isEmpty();
 
