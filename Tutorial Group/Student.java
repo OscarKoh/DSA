@@ -1,4 +1,5 @@
-public class Student {
+// Student.java (Entity class)
+class Student {
     private int studentId;
     private String studentName;
 
