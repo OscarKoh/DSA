@@ -1,15 +1,13 @@
-import java.util.ArrayList;
-import java.util.List;
-
-public class TutorialGroup {
+// TutorialGroup.java (Entity class)
+class TutorialGroup {
     private int groupId;
     private String groupName;
-    private List<Student> students;
+    private MyArrayList<Student> students;
 
     public TutorialGroup(int groupId, String groupName) {
         this.groupId = groupId;
         this.groupName = groupName;
-        this.students = new ArrayList<>();
+        this.students = new MyArrayList<>();
     }
 
     public void addStudent(Student student) {
@@ -17,10 +15,15 @@ public class TutorialGroup {
     }
 
     public void removeStudent(Student student) {
-        students.remove(student);
+        for (int i = 0; i < students.size(); i++) {
+            if (students.get(i).equals(student)) {
+                students.remove(i);
+                return;
+            }
+        }
     }
 
-    public List<Student> listStudents() {
+    public MyArrayList<Student> listStudents() {
         return students;
     }
 
