@@ -22,6 +22,8 @@ public interface ListInterface<T> {
 
     public T get(int index);
 
+    public void reverse();
+
     public void clear();
 
     public T[] toArray();
