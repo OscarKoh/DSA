@@ -109,7 +109,7 @@ public class Programme implements Serializable {
         return ((Programme) o).getProgrammeCode().equals(programmeCode);
     }
 
-   public int compareTo(Programme anotherProgramme, String... attributeNames) throws Exception {
+    public int compareTo(Programme anotherProgramme, String... attributeNames) throws Exception {
         int result = 0;
 
         for (String attributeName : attributeNames) {
@@ -117,14 +117,24 @@ public class Programme implements Serializable {
                 Field field = getClass().getDeclaredField(attributeName);
 
                 if (!Comparable.class.isAssignableFrom(field.getType())) {
-                    throw new IllegalArgumentException("Attribute is not comparable!");
-                }
+                    if (attributeName.equals("creditHour")) {
+                        int thisCreditHour = this.creditHour;
+                        int otherCreditHour = anotherProgramme.creditHour;
+                        result = Integer.compare(thisCreditHour, otherCreditHour);
+                        if (result != 0) {
+                            return result; // Return comparison result if fees are not equal
+                        }
+                    } else {
+                        throw new IllegalArgumentException("Attribute is not comparable: " + attributeName);
+                    }
+                } else {
 
-                result = ((Comparable<Object>) field.get(this))
-                    .compareTo((Comparable<Object>) field.get(anotherProgramme));
+                    result = ((Comparable<Object>) field.get(this))
+                            .compareTo((Comparable<Object>) field.get(anotherProgramme));
 
-                if (result != 0) {
-                    return result; // Attributes are not equal, return comparison result
+                    if (result != 0) {
+                        return result; // Attributes are not equal, return comparison result
+                    }
                 }
             } catch (NoSuchFieldException e) {
                 throw new IllegalArgumentException("Invalid attribute name: " + attributeName, e);
