@@ -79,6 +79,21 @@ public class DataInitializer {
                 courseTypeArrays[i].add(Course.CourseType.TUTORIAL);
                 courseTypeArrays[i].add(Course.CourseType.PRACTICAL);
             }
+
+            // Define the number of tutorial groups for each course
+            int[] numOfGroups = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
+        
+            // Loop through each course and initialize it
+            for (int i = 0; i < courseCodes.length; i++) {
+                // Initialize the course
+                ManageCourse.addCourse(courseCodes[i], courseNames[i], 3, courseTypeArrays[i], fees[i]);
+        
+                // Initialize tutorial groups for the course
+                for (int j = 1; j <= numOfGroups[i]; j++) {
+                    String groupName = courseCodes[i] + "-Group" + j; // Generate group name
+                    ManageTutorialGroup.addTutorialGroup(courseCodes[i], groupName); // Add tutorial group
+                }
+            }
         }
 
         double[] fees = {
