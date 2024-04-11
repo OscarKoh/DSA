@@ -136,6 +136,13 @@ public class ArrayList<T> implements ListInterface<T>, Serializable {
     }
 
     @Override
+    public void reverse() {
+        for (int i = 0; i < size / 2; i++) {
+            swap(i, size - i - 1);
+        }
+    }
+
+    @Override
     public void clear() {
         for (int i = 0; i < size; i++) {
             array[i] = null;
