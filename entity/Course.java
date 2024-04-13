@@ -1,6 +1,5 @@
 package entity;
 
-import TeachingAss.Tutor;
 import Student.Student;
 import adt.ArrayList;
 import adt.ListInterface;
@@ -19,9 +18,12 @@ public class Course implements Serializable {
     private ArrayList<CourseType> courseTypes = new ArrayList<>();
     private int creditHour;
     private double fee;
-    private ListInterface<Student> studentList = new ArrayList<>();
+    private ListInterface<Student> registerStudentList = new ArrayList<>();
     private ListInterface<Tutor> tutorList = new ArrayList<>();
 
+    public Course(){
+        
+    }
     public Course(String code, String name, ArrayList<CourseType> courseTypes, int creditHour, double fee) {
         this.code = code;
         this.name = name;
@@ -60,13 +62,15 @@ public class Course implements Serializable {
         this.programmesList = programmesList;
     }
 
-    public ListInterface<Student> getStudentList() {
-        return studentList;
+    public ListInterface<Student> getRegisterStudentList() {
+        return registerStudentList;
     }
 
-    public void setStudentList(ListInterface<Student> studentList) {
-        this.studentList = studentList;
+    public void setRegisterStudentList(ListInterface<Student> registerStudentList) {
+        this.registerStudentList = registerStudentList;
     }
+
+   
 
     public ListInterface<Tutor> getTutorList() {
         return tutorList;
