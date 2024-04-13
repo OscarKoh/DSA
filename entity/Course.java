@@ -1,6 +1,5 @@
 package entity;
 
-import Student.Student;
 import adt.ArrayList;
 import adt.ListInterface;
 import java.io.Serializable;
