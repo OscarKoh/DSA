@@ -121,6 +121,11 @@ public class ArrayList<T> implements ListInterface<T>, Serializable {
     public boolean isEmpty() {
         return size == 0;
     }
+    
+    @Override
+    public boolean isFull() {
+        return size == array.length;
+    }
 
     @Override
     public int size() {
