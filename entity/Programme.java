@@ -1,6 +1,5 @@
 package entity;
 
-import TutorialGrp.TutorialGrp;
 import adt.ArrayList;
 import adt.ListInterface;
 import java.io.Serializable;
@@ -11,24 +10,38 @@ import java.lang.reflect.Field;
  * @author Loo Suk Zhen
  */
 public class Programme implements Serializable {
-
     private int programmeDurationInMonths;
     private int creditHour = 0;
     private String programmeCode;
     private String programmeName;
     private String faculty;
-    private ListInterface<TutorialGrp> tutorialGroup = new ArrayList<>();
-    private ListInterface<Course> courseList = new ArrayList<>();
+    private int maxTotalCreditHour;
+    private ListInterface<TutorialGroup> tutorialGroup = new ArrayList<>();
+    private ListInterface<Course> courseList = new ArrayList<>(6);
+    private ListInterface<Student> studentList = new ArrayList<>();
 
-    public Programme(String programmeCode, String programmeName, int programmeDurationInMonths, String faculty) {
+    public Programme() {
+
+    }
+
+    public Programme(String programmeCode, String programmeName, int programmeDurationInMonths, String faculty, int maxTotalCreditHour) {
         this.programmeCode = programmeCode;
         this.programmeName = programmeName;
         this.programmeDurationInMonths = programmeDurationInMonths;
         this.faculty = faculty;
+        this.maxTotalCreditHour = maxTotalCreditHour;
     }
 
     public int getProgrammeDurationInMonths() {
         return programmeDurationInMonths;
+    }
+
+    public int getMaxTotalCreditHour() {
+        return maxTotalCreditHour;
+    }
+
+    public void setMaxTotalCreditHour(int maxTotalCreditHour) {
+        this.maxTotalCreditHour = maxTotalCreditHour;
     }
 
     public void setProgrammeDurationInMonths(int programmeDurationInMonths) {
@@ -67,11 +80,11 @@ public class Programme implements Serializable {
         this.programmeName = programmeName;
     }
 
-    public ListInterface<TutorialGrp> getTutorialGroup() {
+    public ListInterface<TutorialGroup> getTutorialGroup() {
         return tutorialGroup;
     }
 
-    public void setTutorialGroup(ListInterface<TutorialGrp> tutorialGroup) {
+    public void setTutorialGroup(ListInterface<TutorialGroup> tutorialGroup) {
         this.tutorialGroup = tutorialGroup;
     }
 
@@ -81,6 +94,14 @@ public class Programme implements Serializable {
 
     public void setCourseList(ListInterface<Course> courseList) {
         this.courseList = courseList;
+    }
+
+    public ListInterface<Student> getStudentList() {
+        return studentList;
+    }
+
+    public void setStudentList(ListInterface<Student> studentList) {
+        this.studentList = studentList;
     }
 
     public boolean addCourse(Course course) {
