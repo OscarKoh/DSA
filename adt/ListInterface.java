@@ -18,6 +18,8 @@ public interface ListInterface<T> {
 
     public boolean isEmpty();
 
+    public boolean isFull();
+
     public int size();
 
     public T get(int index);
