@@ -1,0 +1,106 @@
+package entity;
+
+import adt.ArrayList;
+import adt.ListInterface;
+import java.io.Serializable;
+
+public class Tutor implements Serializable {
+    private String tutorName;
+    private String tutorType;
+    private String tutorGender;
+    private int tutorAge;
+    private ListInterface<Course> coursesList = new ArrayList<>();
+    private ListInterface<TutorialGroup> tutorialGroupsList;
+    private ArrayList<Course.CourseType> courseTypes = new ArrayList<>();
+    
+    public Tutor(String tutorName, String tutorType,String tutorGender,int tutorAge) {
+        this.tutorName = tutorName;
+        this.tutorType = tutorType;
+        this.tutorGender = tutorGender;
+        this.tutorAge = tutorAge;
+        this.coursesList = new ArrayList<>();
+        this.tutorialGroupsList = new ArrayList<>();
+    }
+
+    public String getTutorName() {
+        return tutorName;
+    }
+
+    public void setTutorName(String tutorName) {
+        this.tutorName = tutorName;
+    }
+
+    public String getTutorType() {
+        return tutorType;
+    }
+
+    public void setTutorType(String tutorType) {
+        this.tutorType = tutorType;
+    }
+
+    public String getTutorGender() {
+        return tutorGender;
+    }
+
+    public void setTutorGender(String tutorGender) {
+        this.tutorGender = tutorGender;
+    }
+
+    public int getTutorAge() {
+        return tutorAge;
+    }
+
+    public void setTutorAge(int tutorAge) {
+        this.tutorAge = tutorAge;
+    }
+
+    // Method to add a course to the tutor's list of courses
+    public void addCourse(Course course) {
+        coursesList.add(course);
+    }
+
+    // Method to retrieve the list of courses for the tutor
+    public ListInterface<Course> getCourses() {
+        return coursesList;
+    }
+
+    // Method to add a tutorial group to the tutor's list of tutorial groups
+    public void addTutorialGroup(TutorialGroup group) {
+        tutorialGroupsList.add(group);
+    }
+
+    public void setCourseTypes(ArrayList<Course.CourseType> courseTypes) {
+        this.courseTypes = courseTypes;
+    }
+
+    public ListInterface<TutorialGroup> getTutorialGroupsList() {
+        return tutorialGroupsList;
+    }
+
+    public void setTutorialGroupsList(ListInterface<TutorialGroup> tutorialGroupsList) {
+        this.tutorialGroupsList = tutorialGroupsList;
+    }
+
+    public ArrayList<Course.CourseType> getCourseTypes() {
+        return courseTypes;
+    }
+
+    // Method to retrieve the list of assigned courses for the tutor
+    public ListInterface<Course> getAssignedCourses() {
+        return coursesList;
+    }
+    
+    @Override
+    public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Tutor Name: ").append(tutorName).append("\n");
+    sb.append("Tutor Type: ").append(tutorType).append("\n");
+    sb.append("Tutor Gender: ").append(tutorGender).append("\n");
+    sb.append("Tutor Age: ").append(tutorAge).append("\n");
+    
+    return sb.toString();
+}
+
+    
+    
+}
