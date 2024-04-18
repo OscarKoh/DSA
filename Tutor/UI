@@ -1,0 +1,183 @@
+
+package boundary;
+
+import adt.ListInterface;
+import java.util.Scanner;
+import control.TeachingAssignment;
+import entity.Tutor;
+import init.tutorManagement;
+
+public class TeachingUI {
+    Scanner scanner = new Scanner(System.in);
+    TeachingAssignment teachAss = new  TeachingAssignment();
+    private ListInterface<Tutor> tutorList ;
+   
+   public int getMenuChoice() {
+    boolean continueProgram = true;
+
+    while (continueProgram) {
+        System.out.println("\n*************************************************************");
+        System.out.println("\t\tTeaching Assignment Subsystem");
+        System.out.println("*************************************************************");
+        System.out.println("1. Add new tutor");
+        System.out.println("2. Remove the tutor");
+        System.out.println("3. Assign tutor to courses");
+        System.out.println("4. Assign tutorial groups to a tutor");
+        System.out.println("5. Add tutors to a tutorial group for a course");
+        System.out.println("6. Search courses under a tutor");
+        System.out.println("7. Search tutors for a course (T, P, L)");
+        System.out.println("8. List tutors and tutorial groups for a course");
+        System.out.println("9. List courses for each tutor");
+        System.out.println("10. Filter tutors based on criteria");
+        System.out.println("11. Generate summary reports (at least 2)");
+        System.out.println("0. Exit");
+        System.out.println("*************************************************************");
+
+        System.out.println("Please enter your choice:");
+       int userChoice = scanner.nextInt();
+
+        switch (userChoice) {
+            case 1:
+                teachAss.addTutor();
+                break;
+            case 2:
+                teachAss.removeTutor();
+                break;
+            case 3:
+                teachAss.assignTutorToCourse();
+                getMenuChoice();
+            case 4:
+                teachAss.assignTutorialGroupsToTutor();
+                break;
+            case 5:
+                teachAss.addTutorsToTutorialGroup();
+                break;
+            case 6:                    
+              
+                teachAss.searchTutorUnderCourses();
+                break;
+            case 7:
+                teachAss.searchTutorsForCourseType();
+                
+                break;
+            case 8:
+                teachAss.listTutorsAndTutorialGroupsForCourse();
+ 
+                break;
+            case 9:
+                teachAss.listCoursesForTutors();
+                break;
+            case 10:
+                filterTutors();
+                 break;
+            case 11:
+                generateSummaryReports();
+                break;
+            case 0:
+                System.out.println("Exiting the program...");
+                System.exit(0);
+                break;
+            default:
+                System.out.println("Invalid choice. Please enter a valid option.");
+        }
+        
+    }
+        return 0;
+   }
+
+private void filterTutors() {
+    System.out.println("Filter tutors based on criteria:");
+    System.out.println("1. Age group");
+    System.out.println("2. Tutor Types");
+    
+    System.out.print("Enter your choice: ");
+    int choice = scanner.nextInt();
+    scanner.nextLine(); // Consume the newline character
+
+    switch (choice) {
+        case 1:
+            ListInterface<Tutor> filteredByAge = teachAss.filterTutorsByAgeGroup();
+            displayFilteredTutors(filteredByAge);
+            break;
+        case 2:
+            System.out.print("Enter Tutor type: ");
+            String tutorType = scanner.nextLine();
+            ListInterface<Tutor> filteredByCourseType = teachAss.filterTutorsByTutorType(tutorType);
+            displayFilteredTutors(filteredByCourseType);
+            break;
+        default:
+            System.out.println("Invalid choice.");
+    }
+}
+
+    private void displayFilteredTutors(ListInterface<Tutor> tutors) {
+        if (tutors.isEmpty()) {
+            System.out.println("No tutors found matching the criteria.");
+        } else {
+            System.out.println("Filtered Tutors:");
+            for (int i = 0; i < tutors.size(); i++) {
+                Tutor tutor = tutors.get(i);
+                System.out.println("- " + tutor.getTutorName());
+            }
+        }
+    }
+public void generateSummaryReports() {
+    int choice;
+    boolean validChoice = false;
+
+    do {
+        System.out.println("\nGenerating Summary Reports:");
+        System.out.println("1. Summary report by Tutor List");
+        System.out.println("2. Summary Tutors Assigned To Courses Report");
+        System.out.println("0. Back to main menu");
+        System.out.print("Enter your choice: ");
+        choice = scanner.nextInt();
+
+        switch (choice) {
+            case 0:
+                validChoice = true;
+                break;
+            case 1:
+                generateSummaryReportByTutorList();
+                validChoice = true;
+                break;
+            case 2:
+                generateSummaryReportByTutorAndTutGroup();
+                validChoice = true;
+                break;
+            default:
+                System.out.println("Invalid choice. Please enter 0, 1, or 2.");
+                break;
+        }
+    } while (!validChoice);
+}
+
+
+    private void generateSummaryReportByTutorList() {
+        // Initialize tutorList before calling the generateTutorListReport method
+        tutorManagement tut = new tutorManagement();
+        tutorList = tut.initializeTutors();
+        if (tutorList == null) {
+            System.out.println("Tutor list is not initialized.");
+            return;
+        }
+
+        // Call the generateTutorListReport method from TeachingAssignment
+        teachAss.generateTutorListReport(tutorList);
+    }
+
+
+    private void generateSummaryReportByTutorAndTutGroup() {
+        // Call method to generate summary report by tutor type
+        teachAss.generateTutorsAssignedToCoursesReport();
+    }
+
+
+
+    public static void main(String[] args) {
+        TeachingUI ui = new TeachingUI();
+        while (true) {
+            ui.getMenuChoice();
+        }
+    }
+}
