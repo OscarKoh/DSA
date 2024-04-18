@@ -1,0 +1,804 @@
+package control;
+
+import DAO.courseDAO;
+import DAO.tutorDAO;
+import DAO.tutorialDAO;
+import adt.ArrayList;
+import entity.Course;
+import entity.Tutor;
+import adt.ListInterface;
+import entity.TutorialGroup;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+
+public class TeachingAssignment {
+    private ListInterface<Course> courseList = new ArrayList<>();
+    private ListInterface<Tutor> tutorList = new ArrayList<>();
+    private ListInterface<TutorialGroup> tutorialGroup = new ArrayList<>();
+    private ArrayList<Course.CourseType> courseTypes = new ArrayList<>();
+    Map<String ,ArrayList< Course.CourseType>> tutorCourseTypeMap = new HashMap<>();
+    private courseDAO courseDao = new courseDAO();
+    private tutorDAO tutorDao = new tutorDAO();
+    private tutorialDAO tutgroupDao = new tutorialDAO();
+    private Scanner scanner = new Scanner(System.in);
+
+    public TeachingAssignment() {
+
+       courseList = courseDao.retrieveFromFile();
+       tutorList = tutorDao.retrieveFromFile();
+       tutorialGroup = tutgroupDao.retrieveFromFile();
+        this.scanner = new Scanner(System.in);
+    }
+
+public void addTutor() {
+    boolean continueAdding = true;
+
+    while (continueAdding) {
+        System.out.println("Enter details of the new tutor:");
+        String name = "";
+        boolean validName = false;
+        boolean nameExists = false;
+
+        while (!validName || nameExists) {
+            System.out.print("Name: ");
+            name = scanner.nextLine().trim(); // Trim leading and trailing spaces
+
+            if (Pattern.matches("^[A-Z][a-z]+(\\s[A-Z][a-z]+)*$", name)) {
+                validName = true;
+                // Check if the name already exists in the tutorList
+                nameExists = isTutorNameExists(name);
+                if (nameExists) {
+                    System.out.println("Tutor name already exists. Please enter again.");
+                    validName = false; 
+                }
+            } else {
+                System.out.println("Invalid input! Name must be in the format starting with a capital letter followed by lowercase letters.");
+            }
+        }
+
+        String type = "";
+        boolean validType = false;
+        while (!validType) {
+            System.out.print("Type (Full Time, Part Time): ");
+            type = scanner.nextLine().toLowerCase();
+            if (type.equals("full time") || type.equals("part time")) {
+                validType = true;
+            } else {
+                System.out.println("Invalid input. Type must be either 'Full Time' or 'Part Time'.");
+            }
+        }
+
+        String gender = "";
+        boolean validGender = false;
+        while (!validGender) {
+            System.out.print("Gender (Male/Female): ");
+            gender = scanner.nextLine().toLowerCase();
+            if (gender.equals("male") || gender.equals("female")) {
+                validGender = true;
+            } else {
+                System.out.println("Invalid input. Gender must be either 'Male' or 'Female'.");
+            }
+        }
+        
+        int age = getValidAge("Age: ");
+        Tutor newTutor = new Tutor(name, type, gender, age);
+        tutorList.add(newTutor);
+        tutorDao.saveToFile(tutorList);
+        System.out.println("New tutor added successfully.");
+        System.out.print("Do you want to continue adding tutors? (y/n): ");
+        String userInput = scanner.nextLine().toLowerCase();
+        continueAdding = userInput.equals("y");
+    }
+}
+
+private boolean isTutorNameExists(String name) {
+    for (int i = 0; i < tutorList.size(); i++) {
+        Tutor tutor = tutorList.get(i);
+        if (tutor.getTutorName().equalsIgnoreCase(name)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+public void removeTutor() {
+    boolean continueRemoving = true;
+
+    while (continueRemoving) {
+        System.out.print("Enter the name of the tutor to be removed: ");
+        String nameToRemove = scanner.nextLine();
+
+        boolean tutorFound = false;
+        for (int i = 0; i < tutorList.size(); i++) {
+            Tutor tutor = tutorList.get(i);
+            if (tutor.getTutorName().equalsIgnoreCase(nameToRemove)) {
+                tutorFound = true;           
+                tutorList.remove(i);               
+                tutorDao.saveToFile(tutorList);
+                System.out.println("Tutor removed successfully.");
+                break;
+            }
+        }
+
+        if (!tutorFound) {
+            System.out.println("Tutor not found.");
+        }
+
+        System.out.print("Do you want to continue removing tutors? (y/n): ");
+        String userInput = scanner.nextLine().toLowerCase();
+        if (!userInput.equals("y")) {         
+            continueRemoving = false;
+        }
+    }
+}
+public void assignTutorToCourse() {
+    String courseTypeInput;
+    boolean continueAssigning = true;
+    while (continueAssigning) {
+        System.out.println("Assign Tutor to Course:");
+        System.out.print("\nEnter course code (Press 0 to stop): ");
+        String courseCode = scanner.nextLine();
+
+        if (courseCode.equals("0")) {
+            continueAssigning = false;
+            continue;
+        }
+        Course course = findCourse(courseCode);
+        if (course == null) {
+            System.out.println("Course not found.");
+            continue;
+        }
+        System.out.print("Enter tutor name: ");
+        String tutorName = scanner.nextLine();
+
+        boolean tutorAlreadyAssigned = course.hasTutor(tutorName);
+        if (tutorAlreadyAssigned) {
+            System.out.println("Tutor " + tutorName + " is already assigned to this course.\n");
+            continue;
+        }
+
+        Tutor tutor = findTutor(tutorName);
+        if (tutor == null) {
+            System.out.println("Tutor not found.\n");
+            continue;
+        }
+
+        boolean continueAddingCourseType = true;
+        while (continueAddingCourseType) {
+            System.out.print("Enter course type (L, P, T): ");
+            courseTypeInput = scanner.nextLine().toUpperCase();
+
+            char firstLetter = courseTypeInput.charAt(0);
+            if (firstLetter != 'L' && firstLetter != 'P' && firstLetter != 'T') {
+                System.out.println("Invalid course type.");
+                continue;
+            }
+
+            Course.CourseType courseType = Course.getCourseTypeFromChar(firstLetter); // Retrieve CourseType from Course class
+            
+            // Check if the tutor type is compatible with the course type
+            if (!course.getCourseTypes().contains(courseType)) {
+                System.out.println("Warning: Tutor type is not compatible with the course type.");
+                continue; // Skip the rest of the loop if the tutor type is not compatible
+            }
+
+            ArrayList<Course.CourseType> newCourseType = new ArrayList<>();
+            if (tutorCourseTypeMap.containsKey(tutorName)) {
+                newCourseType = tutorCourseTypeMap.get(tutorName);
+
+                if (!newCourseType.contains(courseType)) {
+                    newCourseType.add(courseType);
+                    tutorCourseTypeMap.put(tutorName, newCourseType);
+                }
+            } else {
+                newCourseType.add(courseType);
+                tutorCourseTypeMap.put(tutorName, newCourseType);
+            }
+
+            System.out.print("Do you want to continue adding course types? (y/n): ");
+            String userInput = scanner.nextLine().toLowerCase();
+            while (!userInput.equals("y") && !userInput.equals("n")) {
+                System.out.print("Invalid input. Please enter 'y' or 'n': ");
+                userInput = scanner.nextLine().toLowerCase();
+            }
+            if (!userInput.equals("y")) {
+                continueAddingCourseType = false;
+            }
+        }
+
+        for (Map.Entry<String, ArrayList<Course.CourseType>> entry : tutorCourseTypeMap.entrySet()) {
+            String assignedTutorName = entry.getKey();
+            ArrayList<Course.CourseType> assignedCourseType = entry.getValue();
+            if (assignedTutorName.equals(tutorName)) {
+                course.addTutor(tutor, assignedCourseType);
+            }
+        }
+        System.out.println("Tutor assigned to course successfully.");
+        System.out.println();
+        courseDao.saveToFile(courseList);
+    }
+
+    boolean atLeastOneCourseWithTutors = false;
+    for (int i = 0; i < courseList.size(); i++) {
+        Course course = courseList.get(i);
+        ListInterface<Tutor> assignedTutors = course.getTutors();
+        if (!assignedTutors.isEmpty()) {
+            atLeastOneCourseWithTutors = true;
+            System.out.println("Course Details:");
+            System.out.println("Code: " + course.getCode());
+            System.out.println("Name: " + course.getName());
+            System.out.println("Assigned Tutors:");
+
+            for (int j = 0; j < assignedTutors.size(); j++) {
+                Tutor assignedTutor = assignedTutors.get(j);
+                StringBuilder tutorInfo = new StringBuilder("- " + assignedTutor.getTutorName() + " - ");
+                ArrayList<Course.CourseType> ct = assignedTutor.getCourseTypes();
+
+                System.out.println("");
+                for (int x = 0; x < ct.size(); x++) {
+                    tutorInfo.append(ct.get(x));
+                    if (x < ct.size() - 1) {
+                        tutorInfo.append(", ");
+                    }
+                }
+                System.out.println(tutorInfo.toString());
+            }
+            System.out.println();
+        }
+    }
+
+    if (!atLeastOneCourseWithTutors) {
+        System.out.println("No courses with assigned tutors.");
+    }
+}
+
+    
+public void assignTutorialGroupsToTutor() {
+    boolean continueAssigning = true;
+
+    while (continueAssigning) {
+        System.out.print("Enter tutor name: ");
+        String tutorName = scanner.nextLine();
+
+        Tutor tutor = findTutor(tutorName);
+        if (tutor == null) {
+            System.out.println("Tutor not found.");
+            return;
+        }
+
+        System.out.println("Assigning tutorial groups to tutor: " + tutor.getTutorName());
+
+        boolean continueAssigningGroups = true;
+        ListInterface<TutorialGroup> assignedGroups = new ArrayList<>(); // Keep track of assigned groups
+        while (continueAssigningGroups) {
+            System.out.print("Enter tutorial group(eg:G1): ");
+            String groupName = scanner.nextLine();
+
+            TutorialGroup group = findTutorialGroup(groupName);
+            if (group == null) {
+                System.out.println("Tutorial group does not exist. Please enter a valid tutorial group.");
+                continue;
+            }
+
+            if (assignedGroups.contains(group)) {
+                System.out.println("Tutorial group " + groupName + " has already been assigned to the tutor.");
+                continue;
+            }
+
+            tutor.addTutorialGroup(group);
+            assignedGroups.add(group);
+
+            tutorDao.saveToFile(tutorList);
+
+            // Prompt until valid input is received
+            boolean validInput = false;
+            while (!validInput) {
+                System.out.print("Do you want to assign another tutorial group to this tutor? (y/n): ");
+                String input = scanner.nextLine();
+                if (input.equalsIgnoreCase("y") || input.equalsIgnoreCase("n")) {
+                    validInput = true;
+                    continueAssigningGroups = input.equalsIgnoreCase("y");
+                } else {
+                    System.out.println("Invalid input. Please enter 'y' or 'n'.");
+                }
+            }
+        }
+
+        // Prompt until valid input is received
+        boolean validInput = false;
+        while (!validInput) {
+            System.out.print("Do you want to assign tutorial groups to another tutor? (y/n): ");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("y") || input.equalsIgnoreCase("n")) {
+                validInput = true;
+                continueAssigning = input.equalsIgnoreCase("y");
+            } else {
+                System.out.println("Invalid input. Please enter 'y' or 'n'.");
+            }
+        }
+    }
+}
+
+
+
+public void addTutorsToTutorialGroup() {
+    // Prompt user to enter course code
+    System.out.print("Enter course code: ");
+    String courseCode = scanner.nextLine();
+
+    Course course = findCourse(courseCode);
+    if (course == null) {
+        System.out.println("Course not found.");
+        return;
+    }
+
+    boolean continueAddingGroups = true;
+    while (continueAddingGroups) {    
+        System.out.println("Available Tutorial Groups:");
+        ListInterface<TutorialGroup> groups = course.getTutorialGroup();
+        for (int i = 0; i < groups.size(); i++) {
+            TutorialGroup group = groups.get(i);
+            System.out.println(group.getNoOfGroup());
+        }
+       
+        String groupName = "";
+        boolean validGroupName = false;
+        while (!validGroupName) {
+            System.out.print("Enter tutorial group name: ");
+            groupName = scanner.nextLine();
+            
+            TutorialGroup group = findTutorialGroup(groupName);
+            if (group != null) {
+                validGroupName = true;
+            } else {
+                System.out.println("Tutorial group not found. Please enter a valid group name.");
+            }
+        }
+
+        TutorialGroup group = findTutorialGroup(groupName);
+
+        boolean continueAddingTutors = true;
+        while (continueAddingTutors) {          
+            String tutorName = "";
+            boolean validTutorName = false;
+            while (!validTutorName) {
+                System.out.print("Enter tutor name: ");
+                tutorName = scanner.nextLine();
+
+                Tutor tutor = findTutor(tutorName);
+                if (tutor != null) {
+                    validTutorName = true;
+                } else {
+                    System.out.println("Tutor not found. Please enter a valid tutor name.");
+                }
+            }
+
+            Tutor tutor = findTutor(tutorName);
+            group.addTutor(tutor);
+            System.out.println("Tutor added to the tutorial group successfully.");
+
+            String input = "";
+            boolean validInput = false;
+            while (!validInput) {
+                System.out.print("Do you want to add another tutor? (y/n): ");
+                input = scanner.nextLine().toLowerCase();
+                if (input.equals("y") || input.equals("n")) {
+                    validInput = true;
+                } else {
+                    System.out.println("Invalid input. Please enter 'y' or 'n'.");
+                }
+            }
+
+            continueAddingTutors = input.equals("y");
+        }
+
+        String input = "";
+        boolean validInput = false;
+        while (!validInput) {
+            System.out.print("Do you want to add tutors to another group? (y/n): ");
+            input = scanner.nextLine().toLowerCase();
+            if (input.equals("y") || input.equals("n")) {
+                validInput = true;
+            } else {
+                System.out.println("Invalid input. Please enter 'y' or 'n'.");
+            }
+        }
+
+        continueAddingGroups = input.equals("y");
+    }
+
+    tutgroupDao.saveToFile(tutorialGroup);
+    tutorDao.saveToFile(tutorList);
+}
+
+public void listCoursesForTutors() {  
+    ListInterface<Course> courses = courseDao.retrieveFromFile();
+    ListInterface<Tutor> tutors = tutorDao.retrieveFromFile(); 
+    
+    for (int i = 0; i < tutors.size(); i++) {
+    Tutor tutor = tutors.get(i);
+
+        System.out.println("Tutor Name: " + tutor.getTutorName());
+        System.out.println("Assigned Courses:");
+
+        for (int j = 0; j < courses.size(); j++) {
+                  Course course = courses.get(j);
+            // Check if the current tutor is assigned to this course
+            if (course.hasTutor(tutor.getTutorName())) {
+                System.out.println("- Course Code: " + course.getCode());
+                System.out.println("  Course Name: " + course.getName());
+            }
+        }
+        
+        System.out.println(); 
+    }
+}
+
+    private Course findCourse(String courseCodes) {
+        for (int i = 0; i < courseList.size(); i++) {
+            Course course = courseList.get(i);
+            if (course.getCode().equalsIgnoreCase(courseCodes)) {
+                return course;
+            }
+        }
+        return null;
+    }
+
+    private Tutor findTutor(String tutorName) {
+        for (int i = 0; i < tutorList.size(); i++) {
+            Tutor tutor = tutorList.get(i);
+            if (tutor.getTutorName().equalsIgnoreCase(tutorName)) {
+                return tutor;
+            }
+        }
+        return null;
+    }
+
+
+
+    private TutorialGroup findTutorialGroup(String getNoOfGroup) {
+    for (int i = 0; i < tutorialGroup.size(); i++) {
+        TutorialGroup group = tutorialGroup.get(i);
+        if (group.getNoOfGroup().equalsIgnoreCase(getNoOfGroup)) {
+            return group;
+        }
+    }
+    return null;
+}
+
+public void searchTutorUnderCourses() {
+    System.out.print("Enter tutor name: ");
+    String tutorName = scanner.nextLine();
+
+    Tutor tutor = findTutor(tutorName);
+    if (tutor == null) {
+        System.out.println("Tutor not found.");
+        return;
+    }
+
+    System.out.println("Courses taught by tutor " + tutorName + ":");
+    boolean found = false;
+    for (int i = 0; i < courseList.size(); i++) {
+        Course course = courseList.get(i);
+        if (course.hasTutor(tutorName)) {
+            found = true;
+            System.out.println("- " + course.getCode() + ": " + course.getName());
+        }
+    }
+    if (!found) {
+        System.out.println("This tutor is not assigned to any courses.");
+    }
+}
+
+public void searchTutorsForCourseType() {
+    System.out.print("Enter course type (T, P, L): ");
+    String searchCourseType = scanner.nextLine().toUpperCase(); 
+
+    // Validate the input course type
+    if (!searchCourseType.equals("T") && !searchCourseType.equals("P") && !searchCourseType.equals("L")) {
+        System.out.println("Invalid course type.");
+        return;
+    }
+
+    boolean foundAtLeastOneCourse = false;
+    for (int i = 0; i < courseList.size(); i++) {
+        Course course = courseList.get(i);
+
+        if (course.getCourseTypes().contains(Course.CourseType.fromChar(searchCourseType.charAt(0)))) {
+            ListInterface<Tutor> tutors = course.getTutors();
+
+            if (!tutors.isEmpty()) {
+                foundAtLeastOneCourse = true;
+                System.out.println("Course Name: " + course.getName());
+
+                for (int j = 0; j < tutors.size(); j++) {
+                    Tutor assignedTutor = tutors.get(j);
+                    ArrayList<Course.CourseType> tutorCourseTypes = assignedTutor.getCourseTypes();
+
+                    if (tutorCourseTypes.contains(Course.CourseType.fromChar(searchCourseType.charAt(0)))) {
+                        System.out.println("- " + assignedTutor.getTutorName());
+                    }
+                }
+                System.out.println(); 
+        }
+    }
+    if (!foundAtLeastOneCourse) {
+        System.out.println("No courses found for the specified course type.");
+    }
+}
+}
+
+
+public void listTutorsAndTutorialGroupsForCourse() {
+
+    System.out.print("Enter course code: ");
+    String courseCode = scanner.nextLine();
+
+    Course course = findCourse(courseCode);
+    if (course == null) {
+        System.out.println("Course not found.");
+        return;
+    }
+
+    System.out.println("Course Details:");
+    System.out.println("Code: " + course.getCode());
+    System.out.println("Name: " + course.getName());
+
+    ListInterface<TutorialGroup> groups = tutgroupDao.retrieveFromFile();
+    if (groups.isEmpty()) {
+        System.out.println("No tutorial groups assigned to this course.");
+    } else {
+        System.out.println("Tutorial Groups:");
+        for (int i = 0; i < groups.size(); i++) {
+            TutorialGroup group = groups.get(i);
+            System.out.println("\nGroup: " + group.getNoOfGroup());
+            ListInterface<Tutor> assignedTutors = group.getTutorList();
+            if (assignedTutors.isEmpty()) {
+                System.out.println("No tutors assigned to this group.");
+            } else {
+                for (int j = 0; j < assignedTutors.size(); j++) {
+                    Tutor tutor = assignedTutors.get(j);
+                    System.out.println("- " + tutor.getTutorName());
+                }
+            }
+        }
+    }
+}
+
+
+public ListInterface<Tutor> filterTutorsByAgeGroup() {
+    ListInterface<Tutor> filteredTutors = new ArrayList<>();
+    boolean validAges = false;
+    
+    do {
+        int minAge;
+        int maxAge;
+
+        do {
+            minAge = getValidAge("Enter minimum age: ");
+            if (minAge < 0) {
+                System.out.println("Invalid input! Age cannot be negative.");
+            }
+        } while (minAge < 0);
+
+        do {
+            maxAge = getValidAge("Enter maximum age: ");
+            if (maxAge < 0) {
+                System.out.println("Invalid input! Age cannot be negative.");
+            } else if (maxAge < minAge) {
+                System.out.println("Invalid input! Maximum age cannot be less than minimum age.");
+            }
+        } while (maxAge < 0 || maxAge < minAge);
+        
+        for (int i = 0; i < tutorList.size(); i++) {
+            Tutor tutor = tutorList.get(i);
+            int tutorAge = tutor.getTutorAge();
+            if (tutorAge >= minAge && tutorAge <= maxAge) {
+                filteredTutors.add(tutor);
+            }
+        }
+
+        if (filteredTutors.isEmpty()) {
+            System.out.println("No tutors match the criteria.");          
+            System.out.print("Do you want to input ages again? (y/n): ");
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (!input.equals("y")) {
+                break;
+            }
+        } else {
+            validAges = true;
+        }
+    } while (!validAges);
+
+    return filteredTutors;
+}
+
+
+public ListInterface<Tutor> filterTutorsByTutorType(String tutorType) {
+    tutorType = getValidTutorType();
+
+    ListInterface<Tutor> filteredTutors = new ArrayList<>();
+    for (int i = 0; i < tutorList.size(); i++) {
+        Tutor tutor = tutorList.get(i);
+        if (tutor.getTutorType().equalsIgnoreCase(tutorType)) {
+            filteredTutors.add(tutor);
+        }
+    }
+    return filteredTutors;
+}
+
+public int getValidAge(String prompt) {
+    int age = -1;
+    boolean validInput = false;
+    while (!validInput) {
+        System.out.print(prompt);
+        try {
+            age = Integer.parseInt(scanner.nextLine());
+            if (age < 0) {
+                System.out.println("Age cannot be negative. Please enter a valid age.");
+            } else {
+                validInput = true;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter an integer.");
+        }
+    }
+    return age;
+}
+
+public String getValidTutorType() {
+    String tutorType = "";
+    boolean validInput = false;
+    while (!validInput) {
+        System.out.print("Enter tutor type (Full Time, Part Time): ");
+        tutorType = scanner.nextLine().toLowerCase();
+        if (tutorType.equals("full time") || tutorType.equals("part time") ) {
+            validInput = true;
+        } else {
+            System.out.println("Invalid input. Please enter 'Full Time', 'Part Time'");
+        }
+    }
+    return tutorType;
+}
+
+public void generateAllTutorsAndTutorialGroupsReport() {
+    for (int i = 0; i < courseList.size(); i++) {
+        Course course = courseList.get(i);
+        StringBuilder report = new StringBuilder();
+        report.append("\nTutors and Tutorial Groups Report for Course ").append(course.getName())
+              .append(" (Code: ").append(course.getCode()).append(")\n\n");
+        
+        ListInterface<TutorialGroup> groups = tutgroupDao.retrieveFromFile();
+        if (groups.isEmpty()) {
+            report.append("No tutorial groups assigned to this course.\n");
+        } else {
+            
+            report.append("Tutorial Groups:\n");
+            for (int j = 0; j < groups.size(); j++) {
+                TutorialGroup group = groups.get(j);
+                report.append("Group: ").append(group.getNoOfGroup()).append("\n");
+                ListInterface<Tutor> assignedTutors = group.getTutorList();
+                if (assignedTutors.isEmpty()) {
+                    report.append("No tutors assigned to this group.");
+                } else {
+                    report.append("Assigned Tutors:\n");
+                    for (int k = 0; k < assignedTutors.size(); k++) {
+                        Tutor tutor = assignedTutors.get(k);
+                        report.append("- ").append(tutor.getTutorName()).append("\n");
+                    }
+                }
+                report.append("\n");
+            }
+        }
+
+        System.out.println(report.toString());
+        System.out.println("-".repeat(95));
+
+    }
+}
+public void generateTutorsAssignedToCoursesReport() {
+
+    ListInterface<Course> courses = courseDao.retrieveFromFile();
+
+    boolean atLeastOneCourseWithTutors = false;
+
+    StringBuilder report = new StringBuilder();
+
+     report.append("\n\t\t   Teaching Assignment Subsystem\n");
+    report.append("\n\t\tTutors Assigned To Courses Report:\n");
+ 
+    for (int i = 0; i < courses.size(); i++) {
+        Course course = courses.get(i);
+        ListInterface<Tutor> assignedTutors = course.getTutors();
+
+        if (!assignedTutors.isEmpty()) {
+            atLeastOneCourseWithTutors = true;
+
+            // Bubble sort tutors by name
+            int n = assignedTutors.size();
+            for (int x = 0; x < n - 1; x++) {
+                for (int y = 0; y < n - x - 1; y++) {
+                    Tutor tutor1 = assignedTutors.get(y);
+                    Tutor tutor2 = assignedTutors.get(y + 1);
+                    if (tutor1.getTutorName().compareTo(tutor2.getTutorName()) > 0) {
+                        // Swap tutor1 and tutor2
+                        assignedTutors.amend(y, tutor2);
+                        assignedTutors.amend(y + 1, tutor1);
+                    }
+                }
+            }
+
+            report.append("\nCourseCode:").append(course.getCode()).append("\n");
+            report.append("CourseName:").append(course.getName()).append("\n");
+            report.append("-".repeat(80)).append("\n");
+            report.append(String.format("%-35s %-20s\n", "Tutor Name", "CourseType"));
+            report.append("-".repeat(80)).append("\n");
+
+            for (int j = 0; j < assignedTutors.size(); j++) {
+                Tutor assignedTutor = assignedTutors.get(j);
+                ListInterface<Course.CourseType> courseTypes = assignedTutor.getCourseTypes();
+
+                StringBuilder courseTypeString = new StringBuilder();
+                for (int k = 0; k < courseTypes.size(); k++) {
+                    Course.CourseType courseType = courseTypes.get(k);
+                    courseTypeString.append(courseType);
+                    if (k < courseTypes.size() - 1) {
+                        courseTypeString.append(", ");
+                    }
+                }
+
+                report.append(String.format("%-35s %-20s\n", assignedTutor.getTutorName(), courseTypeString.toString()));
+            }
+            report.append("-".repeat(80)).append("\n\n");
+        }
+    }
+
+    if (!atLeastOneCourseWithTutors) {
+        report.append("No courses with assigned tutors.\n");
+    }
+
+    System.out.println(report.toString());
+}
+
+
+
+public void generateTutorListReport(ListInterface<Tutor> tutorList) {
+    if (tutorList == null) {
+        System.out.println("Tutor list is null.");
+        return;
+    }
+ 
+    int n = tutorList.size();
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            Tutor tutor1 = tutorList.get(j);
+            Tutor tutor2 = tutorList.get(j + 1);
+            if (tutor1.getTutorName().compareTo(tutor2.getTutorName()) > 0) {
+                // Swap tutor1 and tutor2
+                tutorList.amend(j, tutor2);
+                tutorList.amend(j + 1, tutor1);
+            }
+        }
+    }
+
+    StringBuilder report = new StringBuilder();
+    report.append("\n\t\t\t   Teaching Assignment Subsystem\n");
+    report.append("\n\t\t\t\tTutor List Report:\n");
+    report.append("-".repeat(80)).append("\n");
+    report.append(String.format("%-5s %-35s %-15s %-15s %s\n", "No", "Tutor Name", "Tutor Type", "Gender", "Age"));
+    report.append("-".repeat(80)).append("\n");
+
+    for (int i = 0; i < tutorList.size(); i++) {
+        Tutor tutor = tutorList.get(i);
+        report.append(String.format("%-5d %-35s %-15s %-15s %d\n", i + 1, tutor.getTutorName(), tutor.getTutorType(), tutor.getTutorGender(), tutor.getTutorAge()));
+    }
+    report.append("-".repeat(80)).append("\n");
+
+    System.out.println(report.toString());
+}
+}
+
+
