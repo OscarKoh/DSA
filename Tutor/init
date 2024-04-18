@@ -1,0 +1,205 @@
+package init;
+
+import DAO.courseDAO;
+import DAO.tutorDAO;
+import DAO.tutorialDAO;
+import control.ManageProgramme;
+import control.ManageCourse;
+import adt.ArrayList;
+import adt.ListInterface;
+import entity.Course;
+import entity.Tutor;
+import entity.TutorialGroup;
+
+
+
+public class DataInitializer {
+    
+    
+    public void initializeAllData() {
+        initializeProgramme();
+       // ListInterface<Course> courseList = initializeCourses();
+        
+    }
+
+    public static void initializeProgramme() {
+        String[] programmeCodes = {
+            "RAC",
+            "RBF",
+            "RSW",
+            "RDS",
+            "RET",
+            "RES",
+            "RRT", "DLS", "DMT", "DMA",
+            "DME", "RRM"
+        };
+        String[] programmeNames = {
+            "Diploma in Accounting",
+            "Diploma in Banking and Finance",
+            "Diploma in Software Engineering",
+            "Bachelor of Computer Science In Data Science",
+            "Diploma in Entrepreneurship",
+            "Bachelor of Economics", "Diploma in Electronic Engineering",
+            "Diploma in Event Management", "Diploma in Fashion Design",
+            "Diploma in Finance & Investment", "Diploma in Food Science",
+            "Bachelor of Retail Management"};
+        int[] programmeDuration = new int[]{
+            24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
+            24, 24
+        };
+        String[] faculty = {
+            "FAFB", "FCCI", "FOAS", "FAFB", "FCCI", "FOBE", "FAFB", "FAFB", "FCCI", "FOCS",
+            "FSSH", "FAFB"
+        };
+        for (int i = 0; i < programmeNames.length; i++) {
+            ManageProgramme.addProgramme(programmeCodes[i], programmeNames[i], programmeDuration[i], faculty[i]);
+        }
+    }
+
+
+public  ListInterface<Course> initializeCourses(){
+    // Course data
+    String[] courseCodes = {
+        "BACS2023", "BACS1053", "BACS2063", "BAIT1023", "BAIT1043",
+        "BBBE2013", "BBDT2123", "BAIT2073", "BAIT1093",
+        "BAIT2012"
+    };
+    String[] courseNames = {
+        "Object-Oriented Programming", "Database Management", "Data Structure and Algorithms",
+        "Web Design and Development", "System Analysis And Design", "Money And Banking",
+        "Marketing Of Financial Services", "English For Career Preparation",
+        "Mobile Application Development", "Introduction To Computer Security"
+    };
+
+    // Define course types for each course
+    ArrayList<Course.CourseType>[] courseTypeArrays = new ArrayList[courseCodes.length];
+    for (int i = 0; i < courseCodes.length; i++) {
+        courseTypeArrays[i] = new ArrayList<>(); // Initialize ArrayList
+        if (i < 5) {
+            // Courses with lecture, tutorial, and practical
+            courseTypeArrays[i].add(Course.CourseType.LECTURE);
+            courseTypeArrays[i].add(Course.CourseType.TUTORIAL);
+            courseTypeArrays[i].add(Course.CourseType.PRACTICAL);
+        } else if (i == 6 || i == 7) {
+            // Courses with lecture and tutorial
+            courseTypeArrays[i].add(Course.CourseType.LECTURE);
+            courseTypeArrays[i].add(Course.CourseType.TUTORIAL);
+        } else if (i > 7) {
+            // Courses with lecture, tutorial, and practical (repeated)
+            courseTypeArrays[i].add(Course.CourseType.LECTURE);
+            courseTypeArrays[i].add(Course.CourseType.TUTORIAL);
+            courseTypeArrays[i].add(Course.CourseType.PRACTICAL);
+        }
+    }
+
+    double[] fees = {
+        449.00, 445.00, 700.00, 800.00, 560.00, 780.00, 903.00,
+        670, 899, 995, 555, 677, 777
+    };
+
+    // Create an ArrayList to store the initialized courses
+    ListInterface<Course> courseList = new ArrayList<>();
+
+    // Loop through each course and initialize it
+    for (int i = 0; i < courseCodes.length; i++) {
+        Course course = new Course(courseCodes[i], courseNames[i], courseTypeArrays[i], 3, fees[i]);
+        courseList.add(course);
+        //System.out.println("Course added: " + courseNames[i]);
+    }
+
+    return courseList;
+}
+
+    public ListInterface<TutorialGroup> initializeTutorialGroup() {
+        ListInterface<TutorialGroup> tutorialGroupList = new ArrayList<>(); 
+        tutorialGroupList.add(new TutorialGroup("G1"));
+        tutorialGroupList.add(new TutorialGroup("G2"));
+        tutorialGroupList.add(new TutorialGroup("G3"));
+        tutorialGroupList.add(new TutorialGroup("G4"));
+        tutorialGroupList.add(new TutorialGroup("G5"));
+
+        return tutorialGroupList;
+    }
+    
+     public ListInterface<Tutor> initializeTutors(){
+        ListInterface<Tutor> tutorList = new ArrayList<>();
+  
+        // Add tutors to the list
+        tutorList.add(new Tutor("Tan Li Peng","Full time","Female",35));
+        tutorList.add(new Tutor("Chin Chen Fai" , "Full Time","Male",26));
+        tutorList.add(new Tutor("Ho Chuk Fong" , "Full Time","Male",30));
+        tutorList.add(new Tutor("Heng Jooi Huang" , "Full Time","Male",36));
+        tutorList.add(new Tutor("Chin Wan Yoke", "Full Time","Female",31));
+        tutorList.add(new Tutor("Ting Tin Tin", "Full Time","Female",27));
+        tutorList.add(new Tutor("Goh Chin Pang", "Full Time","Male",28));
+        tutorList.add(new Tutor("Tan Pei Ling", "Full Time","Female",55));
+        tutorList.add(new Tutor("Ow Yong Qing", "Full Time","Female",32));
+        tutorList.add(new Tutor("Loo Suk Zhen", "Full Time","Female",28));
+        
+        tutorList.add(new Tutor("Long Joey", "Full Time","Female",25));
+        tutorList.add(new Tutor("Ong Jing Kai", "Full Time","Male",46));
+        tutorList.add(new Tutor("Bavani A/P Raja Pandian", "Full Time","Female",35));
+        tutorList.add(new Tutor("Lee Mei Fong", "Full Time","Female",64));
+        tutorList.add(new Tutor("Ng Sun Cai", "Full Time","Female",47));
+        tutorList.add(new Tutor("Wong Jia Qian", "Full Time","Female",33));
+        tutorList.add(new Tutor("Lim Jing Xian", "Full Time","Male",32));
+        tutorList.add(new Tutor("Lee Hui Xing", "Full Time","Female",30));
+        tutorList.add(new Tutor("Yap Kar Wen", "Full Time","Female",30));
+        tutorList.add(new Tutor("Ng Xin Jie", "Full Time","Female",49));
+        
+        tutorList.add(new Tutor("Lim Zhi Shen", "Full Time","Male",29));
+        tutorList.add(new Tutor("Ong Lun Wei", "Full Time","Male",55));
+        tutorList.add(new Tutor("Soh Lai Han", "Full Time","Male",60));
+        tutorList.add(new Tutor("Chua Siew Pin", "Full Time","Female",46));
+        tutorList.add(new Tutor("Ng Siew Ling", "Full Time","Female",65));
+        tutorList.add(new Tutor("Goh Jing San", "Full Time","Male",41));
+        tutorList.add(new Tutor("Latifah Binti Adb Latib", "Full Time","Female",35));
+        tutorList.add(new Tutor("Thamarai A/P Subramaniam ", "Full Time","Female",38));
+        tutorList.add(new Tutor("Han Xiao Shi", "Full Time","Female",28));
+        tutorList.add(new Tutor("Tan Ming Lai", "Full Time","Male",58));
+        
+        tutorList.add(new Tutor("How Yi Xian", "Full Time","Male",37));
+        tutorList.add(new Tutor("Loo Ai Ling", "Full Time","Female",59));
+        tutorList.add(new Tutor("Pang Chun Zhe", "Full Time","Female",45));
+        tutorList.add(new Tutor("Seah Qi Wen", "Full Time","Female",46));
+        tutorList.add(new Tutor("Khew Ming Then", "Full Time","Female",34));
+        tutorList.add(new Tutor("Long Bi Ting","Part Time","Female",27));
+        tutorList.add(new Tutor("Yap Jun Zhi","Part Time","Male",46));
+        tutorList.add(new Tutor("Choong Huen Thong","Part Time","Female",30));
+        tutorList.add(new Tutor("Ng Inn Keat","Part Time","Male",29));
+        tutorList.add(new Tutor("Liew Kai Sheng","Part Time","Male",33));
+        
+        tutorList.add(new Tutor("How Heng Zhen","Part Time","Male",58));
+        tutorList.add(new Tutor("Ong Kit Yap","Part Time","Male",63));
+        tutorList.add(new Tutor("Woon Calrine","Part Time","Female",43));
+        tutorList.add(new Tutor("Lee Jing Yi","Part Time","Female",61));
+        tutorList.add(new Tutor("Lee Huang Yi ","Part Time","Male",44));
+        
+        return tutorList;
+    }
+    
+        
+    
+    
+    public static void main(String[] args) {
+        DataInitializer di = new DataInitializer();
+        ListInterface<Course> courseList = di.initializeCourses();
+        courseDAO cDao = new courseDAO();
+        System.out.println("\nCourses:\n" + courseList);
+        cDao.saveToFile(courseList);
+       
+        ListInterface<TutorialGroup> tutorialGroup =di.initializeTutorialGroup();
+        tutorialDAO tutgroupDao = new tutorialDAO();
+        System.out.println("\nTutorial:\n" + tutorialGroup);
+        tutgroupDao.saveToFile(tutorialGroup);
+         
+        ListInterface<Tutor> tutorList = di.initializeTutors();
+        tutorDAO tutDao = new tutorDAO();
+        System.out.println("\nTutor:\n" + tutorList);
+        tutDao.saveToFile(tutorList);
+        
+    }
+
+
+
+}
