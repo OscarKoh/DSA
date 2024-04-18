@@ -1,0 +1,52 @@
+
+
+package entity;
+
+import adt.ArrayList;
+import adt.ListInterface;
+import java.io.Serializable;
+
+
+public class TutorialGroup implements Serializable {
+    private String NoOfGroup;
+
+    private ListInterface<Student> students = new ArrayList<>();
+    private ListInterface<Tutor> tutorList = new ArrayList<>();
+  
+    public TutorialGroup(String NoOfGroup) {
+        this.NoOfGroup = NoOfGroup;
+        this.students = new ArrayList<>();
+    }
+
+    public ListInterface<Tutor> getTutorList() {
+        return tutorList;
+    }
+
+    public void setTutorList(ListInterface<Tutor> tutorList) {
+        this.tutorList = tutorList;
+    }
+
+    public void addStudent(Student student) {
+        students.add(student);
+    }
+
+    public void removeStudent(Student student) {
+        students.remove(student);
+    }
+
+
+    public String getNoOfGroup() {
+        return NoOfGroup;
+    }
+
+    public void setNoOfGroup(String NoOfGroup) {
+        this.NoOfGroup = NoOfGroup;
+    }
+    
+    public void addTutor(Tutor tutor) {
+     tutorList.add(tutor);
+    }
+
+
+
+}
