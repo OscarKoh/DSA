@@ -56,14 +56,6 @@ public class ManageStudent {
         return false; // Programme code is invalid
     }
 
-//    public static boolean validateProgrammeSelection(String programmeCode) {
-//        for (Programme programme : programmeList.toArray()) {
-//            if (programme.getProgrammeCode().equals(programmeCode)) {
-//                return true; // Programme code matches an available programme
-//            }
-//        }
-//        return false; // Programme code does not match any available programme
-//    }
     public static int getNextStudentId() {
         // If the list is empty, return 1 as the first student ID
         if (studentList.isEmpty()) {
@@ -152,29 +144,7 @@ public class ManageStudent {
             return false;
         }
     }
-
-//    public static boolean amendStudent(int studentId, String newName, String newContactNumber, String newProgramme) {
-//        ListInterface<Student> studentList = getStudentList();
-//
-//        // Create a temporary Student object with only the ID provided
-//        Student searchStudent = new Student(studentId, "", "", "", "");
-//
-//        // Search for the index of the student in the list based on the temporary Student object
-//        int index = studentList.search(searchStudent);
-//        if (index != -1) {
-//            // Get the actual Student object from the list using the found index
-//            Student student = studentList.get(index);
-//
-//            // Update the student's details
-//            student.setName(newName);
-//            student.setContact_number(newContactNumber);
-//            student.setProgramme(newProgramme);
-//
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
+    
     public static boolean amendStudent(int studentId, String newName, String newContactNumber) {
         ListInterface<Student> studentList = getStudentList();
 
@@ -213,74 +183,6 @@ public class ManageStudent {
         return true;
     }
 
-//    public static boolean removeStudentCourse(Student student, String courseCodeToRemove) {
-//        ListInterface<RegisteredCourse> registeredCourses = student.getRegisteredCourses();
-//
-//        // Check if the student is registered for the course
-//        boolean found = false;
-//        int indexToRemove = -1;
-//        for (int i = 0; i < registeredCourses.size(); i++) {
-//            RegisteredCourse course = registeredCourses.get(i);
-//            if (course.getCode().equals(courseCodeToRemove)
-//                    && (course.getStatus().equalsIgnoreCase("Main") || course.getStatus().equalsIgnoreCase("Elective"))) {
-//                found = true;
-//                indexToRemove = i;
-//                break;
-//            }
-//        }
-//
-//        if (found) {
-//            registeredCourses.remove(indexToRemove);
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
-//    public static boolean removeStudentCourse(Student student, String courseCodeToRemove) {
-//        ListInterface<RegisteredCourse> registeredCourses = student.getRegisteredCourses();
-//
-//        // Check if the student is registered for the course
-//        boolean found = false;
-//        int indexToRemove = -1;
-//        for (int i = 0; i < registeredCourses.size(); i++) {
-//            RegisteredCourse course = registeredCourses.get(i);
-//            if (course.getCode().equals(courseCodeToRemove)) {
-//                found = true;
-//                indexToRemove = i;
-//                break;
-//            }
-//        }
-//
-//        if (found) {
-//            registeredCourses.remove(indexToRemove);
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
-//    public static boolean removeStudentCourse(Student student, String courseCodeToRemove) {
-//        ListInterface<RegisteredCourse> registeredCourses = student.getRegisteredCourses();
-//
-//        
-//        int indexToRemove = -1;
-//        for (int i = 0; i < registeredCourses.size(); i++) {
-//            RegisteredCourse course = registeredCourses.get(i);
-//            if (course.getCode().equals(courseCodeToRemove)) {
-//                found = true;
-//                if (course.getStatus().equalsIgnoreCase("Main") || course.getStatus().equalsIgnoreCase("Elective")) {
-//                    indexToRemove = i;
-//                    break;
-//                }
-//            }
-//        }
-//
-//        if (found && indexToRemove != -1) {
-//            registeredCourses.remove(indexToRemove);
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
     public static Student getStudentById(int studentId) {
         // Iterate through the list of students to find the one with the matching ID
         for (int i = 0; i < studentList.size(); i++) {
@@ -292,34 +194,6 @@ public class ManageStudent {
         return null; // Or throw an exception indicating that the student was not found
     }
 
-//    public static double calculateStudentBill(int studentId) {
-//        // Get the student object
-//        Student student = ManageStudent.getStudentById(studentId);
-//        if (student == null) {
-//            System.out.println("Student not found.");
-//            return 0.0;
-//        }
-//
-//        // Get the list of registered courses for the student
-//        ListInterface<RegisteredCourse> registeredCourses = student.getRegisteredCourses();
-//
-//        // Initialize total bill
-//        double totalBill = 0.0;
-//
-//        // Iterate through each registered course
-//        for (int i = 0; i < registeredCourses.size(); i++) {
-//            RegisteredCourse regCourse = registeredCourses.get(i);
-//
-//            // Find the corresponding course object
-//            Course course = findCourseByCode(regCourse.getCode());
-//            if (course != null) {
-//                // Add the course fee to the total bill
-//                totalBill += course.getFee();
-//            }
-//        }
-//
-//        return totalBill;
-//    }
     public static double calculateStudentBill(int studentId) {
         // Get the student object
         Student student = ManageStudent.getStudentById(studentId);
@@ -418,20 +292,53 @@ public class ManageStudent {
         return count;
     }
 
-    public static int getNumberOfStudentsInCourse(Course course, ListInterface<Student> studentList) {
-        int count = 0;
+    public static int calculateNumberOfCoursesInProgramme(Programme programme, ListInterface<Student> studentList) {
+        int totalCourses = 0;
+
         for (int i = 0; i < studentList.size(); i++) {
             Student student = studentList.get(i);
-            ListInterface<RegisteredCourse> registeredCourses = student.getRegisteredCourses();
-            for (int j = 0; j < registeredCourses.size(); j++) {
-                RegisteredCourse registeredCourse = registeredCourses.get(j);
-                if (registeredCourse.getCode().equals(course.getCode())) {
-                    count++;
-                    break; // No need to continue searching for this course once found
-                }
+            if (student.getProgramme().equals(programme.getProgrammeCode())) {
+                ListInterface<RegisteredCourse> registeredCourses = student.getRegisteredCourses();
+                totalCourses += registeredCourses.size();
             }
         }
-        return count;
+
+        return totalCourses;
     }
 
+    public static void generateSummaryReport(ListInterface<Course> courseList, ListInterface<Student> studentList, String status) {
+        // Iterate through each course
+        for (int i = 0; i < courseList.size(); i++) {
+            Course course = courseList.get(i);
+
+            // Initialize the count of students with the specified status for the current course
+            int numberOfStudentsWithStatus = 0;
+
+            // Iterate through each student
+            for (int j = 0; j < studentList.size(); j++) {
+                Student student = studentList.get(j);
+
+                // Check if the student is registered for the current course
+                ListInterface<RegisteredCourse> studentRegisteredCourses = student.getRegisteredCourses();
+                for (int k = 0; k < studentRegisteredCourses.size(); k++) {
+                    RegisteredCourse registeredCourse = studentRegisteredCourses.get(k);
+                    if (registeredCourse.getCode().equals(course.getCode())) {
+                        // If the registered course matches the current course, check its status
+                        if (registeredCourse.getStatus().equalsIgnoreCase(status)) {
+                            // If the status matches the specified status, increment the count
+                            numberOfStudentsWithStatus++;
+                            // No need to continue checking this student's other registered courses for this course
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Check if the current course meets the filtering criteria
+            if (numberOfStudentsWithStatus > 0) {
+                // If the course meets the criteria, print its details in the summary report
+                System.out.printf("%-15s  %-60s  %-20d%n", course.getCode(), course.getName(), numberOfStudentsWithStatus);
+            }
+        }
+    }
 }
