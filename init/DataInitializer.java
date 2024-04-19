@@ -47,8 +47,12 @@ public class DataInitializer {
             "FAFB", "FCCI", "FOAS", "FAFB", "FCCI", "FOBE", "FAFB", "FAFB", "FCCI", "FOCS",
             "FSSH", "FAFB"
         };
+        int[] maxTotalCreditHour = new int[]{
+            24, 33, 33, 40, 24, 36, 30, 24, 36, 24,
+            24, 34
+        };
         for (int i = 0; i < programmeNames.length; i++) {
-            ManageProgramme.addProgramme(programmeCodes[i], programmeNames[i], programmeDuration[i], faculty[i]);
+            ManageProgramme.addProgramme(programmeCodes[i], programmeNames[i], programmeDuration[i], faculty[i], maxTotalCreditHour[i]);
         }
     }
 
