@@ -18,9 +18,11 @@ import static control.ManageStudent.validateInputIC;
 import static control.ManageStudent.validateProgrammeCode;
 import init.DataInitializer;
 import entity.Programme;
+import adt.ArrayList;
 import control.ManageCourse;
 import control.ManageProgramme;
 import static control.ManageRegistered.removeRegisteredCourse;
+import java.util.stream.Collectors;
 
 public class StudentRegistration {
 
@@ -407,7 +409,7 @@ public class StudentRegistration {
                     }
                     System.out.println("Enter the student ID(enter the index number): ");
                     int studentIdToRemoveCourse = scanner.nextInt();
-                    scanner.nextLine(); 
+                    scanner.nextLine();
 
                     // Display the courses the student is registered for
                     ListInterface<RegisteredCourse> registeredCourses = ManageRegistered.getRegisteredCoursesForStudent(studentIdToRemoveCourse);
@@ -423,7 +425,7 @@ public class StudentRegistration {
                         // Prompt for the course to remove
                         System.out.println("Enter the index of the course to remove: ");
                         int courseIndexToRemove = scanner.nextInt();
-                        scanner.nextLine(); 
+                        scanner.nextLine();
 
                         // Validate the course index
                         if (courseIndexToRemove < 1 || courseIndexToRemove > registeredCourses.size()) {
@@ -475,38 +477,70 @@ public class StudentRegistration {
                     break;
 
                 case 10:
-                    System.out.println("\n                 Summary Report Students In Programme                   ");
-                    System.out.println("-------------------------------------------------  ---------------------- ");
-                    System.out.printf("%-50s  %-30s%n", "Programme Name", "Number of Students");
-                    System.out.println("-------------------------------------------------  -----------------------");
+                    // Ask the user for filtering criteria
+                    System.out.println("Enter filtering criteria:");
+                    System.out.println("1. Minimum number of students");
+                    System.out.println("2. Maximum number of courses");
+                    System.out.print("Enter your choice: ");
+                    int filterChoice = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline character
 
+                    int minStudents = 0;
+                    int maxCourses = 0;
+
+                    switch (filterChoice) {
+                        case 1:
+                            System.out.print("Enter the minimum number of students: ");
+                            minStudents = scanner.nextInt();
+                            scanner.nextLine(); // Consume newline character
+                            break;
+                        case 2:
+                            System.out.print("Enter the maximum number of courses: ");
+                            maxCourses = scanner.nextInt();
+                            scanner.nextLine(); // Consume newline character
+                            break;
+                        default:
+                            System.out.println("Invalid choice.");
+                            break;
+                    }
+                    System.out.println("\n                   Summary Report Students In Programme                                ");
+                    System.out.println("----------------------------------------------------------------------------------------");
+                    System.out.printf("%-50s  %-20s  %-20s%n", "Programme Name", "Number of Students", "Total Courses");
+                    System.out.println("-------------------------------------------------  --------------------  ---------------");
+
+                    // Generate and display the summary report based on the filtering criteria
                     for (int i = 0; i < programmeList.size(); i++) {
                         Programme pro = programmeList.get(i);
                         int numberOfStudents = ManageStudent.getNumberOfStudentsInProgramme(pro, studentList);
-                        System.out.printf("%-60s  %-20d%n", pro.getProgrammeName(), numberOfStudents);
+                        int totalCourses = ManageStudent.calculateNumberOfCoursesInProgramme(pro, studentList);
+
+                        // Check if the current programme meets the filtering criteria
+                        if ((minStudents == 0 || numberOfStudents >= minStudents) && (maxCourses == 0 || totalCourses <= maxCourses)) {
+                            System.out.printf("%-60s  %-20d  %-20d%n", pro.getProgrammeName(), numberOfStudents, totalCourses);
+                        }
                     }
-                    System.out.println("\n                         End Of Report                                    ");
-                    System.out.println("--------------------------------------------------------------------------");
+
+                    System.out.println("\n                            End Of Report                                              ");
+                    System.out.println("-----------------------------------------------------------------------------------------");
                     break;
 
                 case 11:
-                    System.out.println("\n                          Summary Report Students In Course                             ");
-                    System.out.println("--------------  -------------------------------------------------  -----------------------");
+                    // Ask the user for filtering criteria
+                    System.out.println("Enter the course status:");
+                    String status = scanner.nextLine(); // Consume newline character
+
+                    System.out.println("\n                            Summary Report Students In Course                           ");
+                    System.out.println("----------------------------------------------------------------------------------------- ");
                     System.out.printf("%-15s  %-50s  %-20s%n", "Course Code", "Course Name", "Number of Students");
                     System.out.println("--------------  -------------------------------------------------  -----------------------");
 
-                    // Iterate through each course
-                    for (int i = 0; i < courseList.size(); i++) {
-                        Course course = courseList.get(i);
+                    // Call the method from ManageStudent class to generate and display the summary report
+                    ManageStudent.generateSummaryReport(courseList, studentList, status);
 
-                        int numberOfStudents = ManageStudent.getNumberOfStudentsInCourse(course, studentList);
-
-                        // Print the course details and the number of students
-                        System.out.printf("%-15s  %-60s  %-20d%n", course.getCode(), course.getName(), numberOfStudents);
-                    }
-                    System.out.println("\n                                   End Of Report                                          ");
+                    System.out.println("\n                                  End Of Report                                         ");
                     System.out.println("------------------------------------------------------------------------------------------");
                     break;
+
                 case 0:
                     System.out.println("Exiting...");
                     running = false; // Set running to false to exit the loop
