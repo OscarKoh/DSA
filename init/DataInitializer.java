@@ -168,7 +168,7 @@ public class DataInitializer {
         };
 
         String[] stuProgramme = { // Change to array of programme codes
-            "RAC", "RDS", "RSW", "RDS", "RRT", "RET", "DLS", "DMA", "DMA", "RRM", "DME", "RAC"
+            "RAC", "RBF", "RSW", "RDS", "RRT", "RET", "DLS", "DMA", "DMA", "RRM", "DME", "RAC"
         };
         
         for (int i = 0; i < stuname.length; i++) {
