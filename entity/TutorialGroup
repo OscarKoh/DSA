@@ -6,18 +6,15 @@ import adt.ListInterface;
 public class TutorialGroup {
 
     private String groupId;
-    private String groupName;
     private Programme programme;
     private ListInterface<Student> studentList;
     private ListInterface<Team> teamList;
-    private ListInterface<Course> courseList;
 
-    public TutorialGroup(String groupId, String groupName) {
+    public TutorialGroup(String groupId, Programme programme) {
         this.groupId = groupId;
-        this.groupName = groupName;
+        this.programme = programme;
         this.studentList = new ArrayList<>();
         this.teamList = new ArrayList<>();
-        this.courseList = new ArrayList<>();
     }
 
     public ListInterface<Student> getStudentLists() {
@@ -28,24 +25,22 @@ public class TutorialGroup {
         return teamList;
     }
 
-    public ListInterface<Course> getCourseLists() {
-        return courseList;
-    }
-
     public Programme getProgramme() {
         return programme;
     }
 
-    public void setProgramme(Programme programme) {
-        this.programme = programme;
+    public void setProgramme(Programme program) {
+        this.programme = program;
     }
 
     public String getGroupId() {
         return groupId;
     }
 
-    public String getGroupName() {
-        return groupName;
+    @Override
+    public String toString() {
+        return  "groupId='" + groupId + '\''
+                + ", programme=" + programme.getProgrammeName();
     }
 
 }
