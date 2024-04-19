@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Boundary;
+package boundary;
 
 //Ow Yong Qing
 import entity.Course;
@@ -16,19 +16,15 @@ import static control.ManageStudent.validateName;
 import static control.ManageStudent.validateInputCN;
 import static control.ManageStudent.validateInputIC;
 import static control.ManageStudent.validateProgrammeCode;
-import init.DataInitializer;
 import entity.Programme;
-import adt.ArrayList;
 import control.ManageCourse;
 import control.ManageProgramme;
 import static control.ManageRegistered.removeRegisteredCourse;
 import static control.ManageStudent.addStudent;
-import java.util.stream.Collectors;
 
 public class StudentRegistration {
 
-    public static void main(String[] args) {
-        DataInitializer.initializeAllData();
+    public static void studentRegistration() {
         Scanner scanner = new Scanner(System.in);
         ListInterface<Student> studentList = ManageStudent.getStudentList();
         ListInterface<Course> courseList = ManageCourse.getCourseList();
@@ -568,10 +564,10 @@ public class StudentRegistration {
                     break;
 
                 case 0:
-                    System.out.println("Exiting...");
-                    running = false; // Set running to false to exit the loop
-                    break;
-
+                    running = true;
+                    if (running) {
+                        return; // Return from the method to go back to the main menu
+                    }
                 default:
                     System.out.println("Invalid option!");
                     break;
