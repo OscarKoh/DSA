@@ -4,9 +4,9 @@
  */
 package control;
 
-import Entity.Course;
-import Entity.RegisteredCourse;
-import Entity.Student;
+import entity.Course;
+import entity.RegisteredCourse;
+import entity.Student;
 import adt.ArrayList;
 import adt.ListInterface;
 import static control.ManageStudent.findCourseByCode;
