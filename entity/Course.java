@@ -16,9 +16,10 @@ public class Course implements Serializable {
     private ListInterface<Programme> programmesList = new ArrayList<>();
     private ArrayList<CourseType> courseTypes = new ArrayList<>();
     private int creditHour;
+    private int teamSize;
     private double fee;
     private ListInterface<Student> registerStudentList = new ArrayList<>();
-    private ListInterface<Tutor> tutorList = new ArrayList<>();
+    //private ListInterface<Tutor> tutorList = new ArrayList<>();
     private ListInterface<TutorialGroup> groupList = new ArrayList<>();
     private ListInterface<Team> teamList = new ArrayList<>();
 
@@ -32,7 +33,15 @@ public class Course implements Serializable {
         this.courseTypes = courseTypes;
         this.fee = fee;
     }
+    
+    public void setTeamSize(int teamSize){
+        this.teamSize = teamSize;
+    }
 
+    public int getTeamSize(){
+        return teamSize;
+    }
+    
     public double getFee() {
         return fee;
     }
@@ -53,6 +62,10 @@ public class Course implements Serializable {
         LECTURE,
         TUTORIAL,
         PRACTICAL
+    }
+    
+    public ListInterface<Team> getTeamLists(){
+        return teamList;
     }
 
     public ListInterface<Programme> getProgrammesList() {
@@ -81,13 +94,13 @@ public class Course implements Serializable {
 
    
 
-    public ListInterface<Tutor> getTutorList() {
-        return tutorList;
-    }
-
-    public void setTutorList(ListInterface<Tutor> tutorList) {
-        this.tutorList = tutorList;
-    }
+//    public ListInterface<Tutor> getTutorList() {
+//        return tutorList;
+//    }
+//
+//    public void setTutorList(ListInterface<Tutor> tutorList) {
+//        this.tutorList = tutorList;
+//    }
 
     public String getCode() {
         return code;
