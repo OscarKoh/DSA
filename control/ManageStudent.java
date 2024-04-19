@@ -39,7 +39,7 @@ public class ManageStudent {
         String regex = "\\d{6}-\\d{2}-\\d{4}";
         return IC.matches(regex);
     }
-
+    
     public static boolean validateInputCN(String contact_number) {
         String regex = "\\d{3}-\\d{7}";
         return contact_number.matches(regex);
@@ -79,10 +79,11 @@ public class ManageStudent {
             }
         }
         return maxID;
+        
     }
 
     public static boolean addStudent(int id, String name, String IC, String contact_number, String programme) {
-        if (checkExistsInStudent(IC)) {
+        if (checkExistsInStudent(IC, contact_number)) {
             System.out.println("This student already exists.\n");
             return false;
         }
@@ -104,19 +105,9 @@ public class ManageStudent {
         return null;
     }
 
-    public static boolean checkExistsInStudent(String stuIC) {
-        String ic = "";
-        for (int i = 0; i < stuIC.length(); i++) {
-            char integer;
-
-            if (Character.isDigit(stuIC.charAt(i))) {
-                integer = stuIC.charAt(i);
-                ic = ic + integer;
-            }
-        }
-
+    public static boolean checkExistsInStudent(String stuIC, String contactNum) {
         for (int j = 0; j < studentList.size(); j++) {
-            if (studentList.get(j).getIC().equals(ic)) {
+            if (studentList.get(j).getIC().equalsIgnoreCase(stuIC) || studentList.get(j).getContact_number().equalsIgnoreCase(contactNum)) {
                 return true;
             }
         }
@@ -144,28 +135,36 @@ public class ManageStudent {
             return false;
         }
     }
-    
-    public static boolean amendStudent(int studentId, String newName, String newContactNumber) {
-        ListInterface<Student> studentList = getStudentList();
 
-        int index = studentList.search(new Student(studentId, "", "", "", ""));
-        if (index != -1) {
-            Student student = studentList.get(index);
-            if (newName != null && !newName.isEmpty()) {
-                student.setName(newName);
+    public static boolean amendStudentName(int studentId, String newName) {
+//        Student student = new Student(studentId, "", "", "", "");
+//        int index = studentList.search(student);
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            if (student.getStudentID() == studentId) {
+                if (newName != null && !newName.isEmpty()) {
+                    studentList.get(i).setName(newName);
+                    return true;
+                }
+
             }
-            if (newContactNumber != null && !newContactNumber.isEmpty()) {
-                student.setContact_number(newContactNumber);
-            }
-//            if (newProgramme != null && !newProgramme.isEmpty()) {
-//                student.setProgramme(newProgramme);
-//            }
-            return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
+    public static boolean amendStudentContact(int studentId, String newContactNumber) {
+        Student student = getStudentById(studentId);
+        for (int i = 0; i < studentList.size(); i++) {
+
+            if (newContactNumber.isEmpty() || studentList.get(i).getContact_number().equalsIgnoreCase(newContactNumber)) {
+                return false; // No need to update if the new contact number is empty or same as the old one
+            }
+        }
+
+        student.setContact_number(newContactNumber); // Update the contact number
+        return true; // Contact number successfully updated
+    }
+    
     public static Course findCourseByCode(String courseCode) {
         for (int i = 0; i < ManageCourse.getCourseList().size(); i++) {
             if (ManageCourse.getCourseList().get(i).getCode().equalsIgnoreCase(courseCode)) {
