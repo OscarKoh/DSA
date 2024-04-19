@@ -5,9 +5,9 @@
 package Boundary;
 
 //Ow Yong Qing
-import Entity.Course;
-import Entity.RegisteredCourse;
-import Entity.Student;
+import entity.Course;
+import entity.RegisteredCourse;
+import entity.Student;
 import adt.ListInterface;
 import java.util.Scanner;
 import control.ManageStudent;
@@ -17,7 +17,7 @@ import static control.ManageStudent.validateInputCN;
 import static control.ManageStudent.validateInputIC;
 import static control.ManageStudent.validateProgrammeCode;
 import init.DataInitializer;
-import Entity.Programme;
+import entity.Programme;
 import control.ManageCourse;
 import control.ManageProgramme;
 import static control.ManageRegistered.removeRegisteredCourse;
