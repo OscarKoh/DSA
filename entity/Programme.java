@@ -89,7 +89,7 @@ public class Programme implements Serializable {
         this.programmeName = programmeName;
     }
 
-    public ListInterface<TutorialGroup> getGroupList() {
+    public ListInterface<TutorialGroup> getGroupLists() {
         return groupList;
     }
 
