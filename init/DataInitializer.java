@@ -6,6 +6,7 @@ import adt.ArrayList;
 import entity.Course;
 import entity.RegisteredCourse;
 import control.ManageRegistered;
+import static control.ManageProgramme.findProgrammeByName;
 import control.ManageStudent;
 
 public class DataInitializer {
