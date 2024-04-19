@@ -22,6 +22,7 @@ import adt.ArrayList;
 import control.ManageCourse;
 import control.ManageProgramme;
 import static control.ManageRegistered.removeRegisteredCourse;
+import static control.ManageStudent.addStudent;
 import java.util.stream.Collectors;
 
 public class StudentRegistration {
@@ -122,12 +123,14 @@ public class StudentRegistration {
                             continue;
                         }
 
-                        System.out.println("-------------------");
-                        System.out.println("Insert Successfully");
-                        System.out.println("-------------------");
-
                         // Create and return a new Student object
-                        ManageStudent.addStudent(id, name, IC, contact_number, programme);
+                        boolean success = addStudent(id, name, IC, contact_number, programme);
+                        if (success) {
+                            System.out.println("-------------------");
+                            System.out.println("Insert Successfully");
+                            System.out.println("-------------------");
+                        }
+
                         break;
                     }
                     break;
@@ -217,7 +220,7 @@ public class StudentRegistration {
                                         System.out.println("Invalid name. Please try again.");
                                     } else {
                                         studentToAmend.setName(newName);
-                                        amend = ManageStudent.amendStudent(studentIdToAmend, newName, studentToAmend.getContact_number());
+                                        amend = ManageStudent.amendStudentName(studentIdToAmend, newName);
                                         if (amend) {
                                             System.out.println("-------------------------------------");
                                             System.out.println("Student details successfully amended.");
@@ -241,8 +244,7 @@ public class StudentRegistration {
                                     if (!validateInputCN(newContactNumber)) {
                                         System.out.println("Invalid contact number format. Please try again.");
                                     } else {
-                                        studentToAmend.setContact_number(newContactNumber);
-                                        amend = ManageStudent.amendStudent(studentIdToAmend, studentToAmend.getName(), newContactNumber);
+                                        amend = ManageStudent.amendStudentContact(studentIdToAmend, newContactNumber);
                                         if (amend) {
                                             System.out.println("-------------------------------------");
                                             System.out.println("Student details successfully amended.");
@@ -362,6 +364,21 @@ public class StudentRegistration {
                         System.out.println("\nEnter course code: ");
                         String courseCode = scanner.nextLine();
 
+                        //validate course code
+                        boolean isValidCourseCode = false;
+                        for (int i = 0; i < availableCourses.size(); i++) {
+                            Course course = availableCourses.get(i);
+                            if (course.getCode().equalsIgnoreCase(courseCode)) {
+                                isValidCourseCode = true;
+                                break;
+                            }
+                        }
+
+                        if (!isValidCourseCode) {
+                            System.out.println("Invalid course code. Please enter a course from the available courses list.");
+                            continue;
+                        }
+
                         // Check if the student is already registered for the course
                         boolean alreadyRegisteredForCourse = false;
                         ListInterface<RegisteredCourse> studentRegisteredCourses = selectedStudent.getRegisteredCourses();
@@ -379,15 +396,24 @@ public class StudentRegistration {
                         }
 
                         // Proceed with adding the course
-                        System.out.println("\nEnter status: ");
+                        System.out.println("\nEnter status (Main, Elective, Resit, Repeat): ");
                         String status = scanner.nextLine();
+
+                        // Validate status
+                        if (!(status.equals("Main") || status.equals("Elective") || status.equals("Resit") || status.equals("Repeat"))) {
+                            System.out.println("Invalid status. Please enter 'Main', 'Elective', 'Resit', or 'Repeat'.");
+                            continue;
+                        }
+
+                        // Convert the first letter to uppercase
+                        status = status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase();
+
                         RegisteredCourse registerCourse = new RegisteredCourse(selectedStudent.getStudentID(), courseCode, status);
                         boolean success = ManageRegistered.addRegistered(registerCourse);
                         if (success) {
                             System.out.println("Registration successfully added.");
                         }
 
-//                        ManageStudent.addStudentCourse(selectedStudent, courseCode, status);
                         System.out.println("\nDo you want to add another course? (yes/no)");
                         String continueChoice = scanner.nextLine().toLowerCase();
                         if (continueChoice.equals("no")) {
