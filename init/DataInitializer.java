@@ -92,10 +92,28 @@ public class DataInitializer {
             670, 899, 995, 555, 677, 777
         };
 
+         String[] programmeNames = {
+            "Diploma in Accounting",
+            "Diploma in Banking and Finance",
+            "Diploma in Software Engineering",
+            "Bachelor of Computer Science In Data Science",
+            "Diploma in Entrepreneurship",
+            "Bachelor of Economics", "Diploma in Electronic Engineering",
+            "Diploma in Event Management", "Diploma in Fashion Design",
+            "Diploma in Finance & Investment", "Diploma in Food Science",
+            "Bachelor of Retail Management"};
+
         // Loop through each course and initialize it
         for (int i = 0; i < courseCodes.length; i++) {
             ManageCourse.addCourse(courseCodes[i], courseNames[i],  3, courseTypeArrays[i], fees[i]);
         }
+        ManageCourse.addProgrammeToCourse(findProgrammeByName(programmeNames[0]), ManageCourse.getCourseList().get(0));
+        ManageCourse.addProgrammeToCourse(findProgrammeByName(programmeNames[0]), ManageCourse.getCourseList().get(1));
+        ManageCourse.addProgrammeToCourse(findProgrammeByName(programmeNames[1]), ManageCourse.getCourseList().get(0));
+        ManageCourse.addProgrammeToCourse(findProgrammeByName(programmeNames[1]), ManageCourse.getCourseList().get(2));
+        ManageCourse.addProgrammeToCourse(findProgrammeByName(programmeNames[2]), ManageCourse.getCourseList().get(0));
+        ManageCourse.addProgrammeToCourse(findProgrammeByName(programmeNames[2]), ManageCourse.getCourseList().get(2));
+        ManageCourse.addProgrammeToCourse(findProgrammeByName(programmeNames[2]), ManageCourse.getCourseList().get(9));
     }
 
     public static void initializeStudent() {
@@ -159,26 +177,13 @@ public class DataInitializer {
 
     public static void initializeRegistration() {
         RegisteredCourse[] regCourses = {
-            new RegisteredCourse(1001, "BBBE2013", "Main"),
-            new RegisteredCourse(1001, "BBDT2123", "Elective"),
-            new RegisteredCourse(1001, "BAIT2073", "Resit"),
-            new RegisteredCourse(1002, "BACS1053", "Main"),
-            new RegisteredCourse(1002, "BACS2063", "Resit"),
+            new RegisteredCourse(1001, "BACS2023", "Main"),
+            new RegisteredCourse(1001, "BACS1053", "Resit"),
+            new RegisteredCourse(1002, "BACS2063", "Elective"),
+            new RegisteredCourse(1002, "BACS2023", "Resit"),
             new RegisteredCourse(1003, "BACS2063", "Elective"),
-            new RegisteredCourse(1003, "BAIT1093", "Repeat"),
-            new RegisteredCourse(1003, "BAIT2012", "Repeat"),
-            new RegisteredCourse(1004, "BACS1053", "Repeat"),
-            new RegisteredCourse(1004, "BACS2063", "Main"),
-            new RegisteredCourse(1005, "BACS2023", "Resit"),
-            new RegisteredCourse(1006, "BBBE2013", "Repeat"),
-            new RegisteredCourse(1006, "BBDT2123", "Elective"),
-            new RegisteredCourse(1007, "BAIT2073", "Elective"),
-            new RegisteredCourse(1008, "BBDT2123", "Resit"),
-            new RegisteredCourse(1009, "BBDT2123", "Main"),
-            new RegisteredCourse(1010, "BBBE2013", "Resit"),
-            new RegisteredCourse(1011, "BAIT2073", "Elective"),
-            new RegisteredCourse(1012, "BBDT2123", "Main")};
-
+            new RegisteredCourse(1003, "BACS2023", "Repeat"),
+            new RegisteredCourse(1003, "BAIT2012", "Main")};
         for (RegisteredCourse regCourse : regCourses) {
             ManageRegistered.addRegistered(regCourse);
         }
