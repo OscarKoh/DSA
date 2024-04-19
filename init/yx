@@ -65,3 +65,23 @@
         
         return tutorList;
     }
+
+    public static void main(String[] args) {
+        DataInitializer di = new DataInitializer();
+        
+        ListInterface<Course> courseList = di.initializeCourses();
+        courseDAO cDao = new courseDAO();
+        System.out.println("\nCourses:\n" + courseList);
+        cDao.saveToFile(courseList);
+       
+        ListInterface<TutorialGroup> tutorialGroup =di.initializeTutorialGroup();
+        tutorialDAO tutgroupDao = new tutorialDAO();
+        System.out.println("\nTutorial:\n" + tutorialGroup);
+        tutgroupDao.saveToFile(tutorialGroup);
+         
+        ListInterface<Tutor> tutorList = di.initializeTutors();
+        tutorDAO tutDao = new tutorDAO();
+        System.out.println("\nTutor:\n" + tutorList);
+        tutDao.saveToFile(tutorList);
+        
+    }
