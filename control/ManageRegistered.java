@@ -51,16 +51,6 @@ public class ManageRegistered {
         return false;
     }
 
-//    public static ListInterface<RegisteredCourse> getRegisteredCoursesForStudent(int studentID) {
-//        ListInterface<RegisteredCourse> courses = new ArrayList<>();
-//        for (int j = 0; j < registeredList.size(); j++) {
-//            RegisteredCourse registeredCourse = registeredList.get(j);
-//            if (registeredCourse.getStudentID() == studentID) {
-//                courses.add(registeredCourse);
-//            }
-//        }
-//        return courses;
-//    }
     public static ListInterface<RegisteredCourse> getRegisteredCoursesStudent(int studentID) {
         ListInterface<RegisteredCourse> courses = new ArrayList<>();
         for (int j = 0; j < registeredList.size(); j++) {
@@ -101,16 +91,7 @@ public class ManageRegistered {
 
         return true;
     }
-//    
-//     public static RegisteredCourse findCourseByCode(String courseCode){
-//        for (int i = 0; i < registeredList.size(); i++) {
-//            if(registeredList.get(i).getCode().equalsIgnoreCase(courseCode)){
-//                return registeredList.get(i);
-//            }
-//        }
-//        return null;
-//    }
-
+    
     public static boolean registerStudentCourse(int studentID) {
         for (int i = 0; i < registeredList.size(); i++) {
             if (registeredList.get(i).getStudentID() == studentID) {
@@ -120,39 +101,6 @@ public class ManageRegistered {
         return false;
     }
 
-//    public static boolean removeRegisteredCourse(int studentId, String courseCodeToRemove) {
-//        ListInterface<RegisteredCourse> registeredCourses = getRegisteredCoursesForStudent(studentId);
-//
-//        // Check if the student is registered for the course
-//        boolean found = false;
-//        int indexToRemove = -1;
-//        for (int i = 0; i < registeredCourses.size(); i++) {
-//            RegisteredCourse course = registeredCourses.get(i);
-//            if (course.getCode().equals(courseCodeToRemove)) {
-//                found = true;
-//                indexToRemove = i;
-//                break;
-//            }
-//        }
-//
-//        if (found) {
-//            registeredCourses.remove(indexToRemove);
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
-//    public static RegisteredCourse findRegCourse(int studentId, String courseCodeToRemove) {
-//        RegisteredCourse registerCourse = null;
-//        for (int i = 0; i < registeredList.size(); i++) {
-//            if (registeredList.get(i).getStudentID() == studentId) {
-//                if (registeredList.get(i).getCode().equalsIgnoreCase(courseCodeToRemove)) {
-//                    registerCourse = registeredList.get(i);
-//                }
-//            }
-//            return registerCourse;
-//        }
-//    }
     public static boolean removeRegisteredCourse(int stdChoice, int crsChoice) {
         Student student = ManageStudent.getStudentList().get(stdChoice - 1);
         ListInterface<RegisteredCourse> regCourseList = getRegisteredCoursesForStudent(stdChoice);
