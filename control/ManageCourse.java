@@ -80,10 +80,9 @@ public class ManageCourse {
     }
 
 
-    public static boolean addProgrammeToCourse(String progName, Course course) {
-        Programme programme = ManageProgramme.findProgrammeByName(progName);
+   public static boolean addProgrammeToCourse(Programme programme, Course course) {
         if (course.getProgrammesList().search(programme) != -1) {
-            System.out.println("Programme " + progName + " is already existed in course " + course.getName());
+            System.out.println("Programme " + programme.getProgrammeName() + " is already existed in course " + course.getName());
             return false;
         }
         course.getProgrammesList().add(programme);
