@@ -16,7 +16,7 @@ public class Programme implements Serializable {
     private String programmeName;
     private String faculty;
     private int maxTotalCreditHour;
-    private ListInterface<TutorialGroup> tutorialGroup = new ArrayList<>();
+    private ListInterface<TutorialGroup> groupList = new ArrayList<>();
     private ListInterface<Course> courseList = new ArrayList<>(6);
     private ListInterface<Student> studentList = new ArrayList<>();
 
@@ -80,12 +80,12 @@ public class Programme implements Serializable {
         this.programmeName = programmeName;
     }
 
-    public ListInterface<TutorialGroup> getTutorialGroup() {
-        return tutorialGroup;
+    public ListInterface<TutorialGroup> getGroupList() {
+        return groupList;
     }
 
-    public void setTutorialGroup(ListInterface<TutorialGroup> tutorialGroup) {
-        this.tutorialGroup = tutorialGroup;
+    public void setTutorialGroup(ListInterface<TutorialGroup> groupList) {
+        this.groupList = groupList;
     }
 
     public ListInterface<Course> getCourseList() {
