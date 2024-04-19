@@ -1,11 +1,13 @@
 package boundary;
 
-
+import init.DataInitializer;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
+        DataInitializer.initializeAllData();
         Scanner scanner = new Scanner(System.in);
 
         boolean exit = false;
@@ -16,22 +18,32 @@ public class Main {
             System.out.println("Choose an option:");
             System.out.println("1. Course Management System");
             System.out.println("2. Student Registration System");
-            System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            while (true) {
+                try {
+                    System.out.print("Enter your choice: ");
 
-            switch (choice) {
-                case 1:
-                    CourseManagement.courseManagement();
-                    break;
-                case 2:
-                    StudentRegistration.studentRegistration();
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please enter a valid option.");
+                    int choice = scanner.nextInt();
+                    scanner.nextLine();
+
+                    switch (choice) {
+                        case 1:
+                            CourseManagement.courseManagement();
+                            break;
+                        case 2:
+                            StudentRegistration.studentRegistration();
+                            break;
+                        default:
+                            System.out.println("Invalid choice. Please enter a valid option.");
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid number.");
+                    scanner.nextLine(); // Clear the invalid input
+                    continue;
+                }
+                break;
             }
+
         }
-        scanner.close();
 
     }
 }
