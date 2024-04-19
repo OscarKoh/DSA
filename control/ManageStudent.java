@@ -11,10 +11,10 @@ package control;
 import adt.ListInterface;
 //import DAO.studentDAO;
 import adt.ArrayList;
-import Entity.Course;
-import Entity.Programme;
-import Entity.RegisteredCourse;
-import Entity.Student;
+import entity.Course;
+import entity.Programme;
+import entity.RegisteredCourse;
+import entity.Student;
 
 public class ManageStudent {
 
