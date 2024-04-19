@@ -19,6 +19,8 @@ public class Course implements Serializable {
     private double fee;
     private ListInterface<Student> registerStudentList = new ArrayList<>();
     private ListInterface<Tutor> tutorList = new ArrayList<>();
+    private ListInterface<TutorialGroup> groupList = new ArrayList<>();
+    private ListInterface<Team> teamList = new ArrayList<>();
 
     public Course(){
         
@@ -59,6 +61,14 @@ public class Course implements Serializable {
 
     public void setProgrammesList(ListInterface<Programme> programmesList) {
         this.programmesList = programmesList;
+    }
+
+    public ListInterface<TutorialGroup> getGroupList() {
+        return groupList;
+    }
+
+    public ListInterface<Team> getTeamList() {
+        return teamList;
     }
 
     public ListInterface<Student> getRegisterStudentList() {
