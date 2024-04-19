@@ -10,12 +10,13 @@ import java.lang.reflect.Field;
  * @author Loo Suk Zhen
  */
 public class Programme implements Serializable {
+
     private int programmeDurationInMonths;
     private int creditHour = 0;
     private String programmeCode;
     private String programmeName;
     private String faculty;
-//    private int maxTotalCreditHour;
+    //private int maxTotalCreditHour;
     private ListInterface<TutorialGroup> groupList = new ArrayList<>();
     private ListInterface<Course> courseList = new ArrayList<>(6);
     private ListInterface<Student> studentList = new ArrayList<>();
@@ -24,25 +25,33 @@ public class Programme implements Serializable {
 
     }
 
+//    public Programme(String programmeCode, String programmeName, int programmeDurationInMonths, String faculty, int maxTotalCreditHour) {
+//        this.programmeCode = programmeCode;
+//        this.programmeName = programmeName;
+//        this.programmeDurationInMonths = programmeDurationInMonths;
+//        this.faculty = faculty;
+//        this.maxTotalCreditHour = maxTotalCreditHour;
+//    }
+
     public Programme(String programmeCode, String programmeName, int programmeDurationInMonths, String faculty) {
         this.programmeCode = programmeCode;
         this.programmeName = programmeName;
         this.programmeDurationInMonths = programmeDurationInMonths;
         this.faculty = faculty;
-    //    this.maxTotalCreditHour = maxTotalCreditHour;
+        //this.maxTotalCreditHour = maxTotalCreditHour;
     }
 
     public int getProgrammeDurationInMonths() {
         return programmeDurationInMonths;
     }
 
-   // public int getMaxTotalCreditHour() {
-//    return maxTotalCreditHour;
-   // }
-
- //   public void setMaxTotalCreditHour(int maxTotalCreditHour) {
-   //     this.maxTotalCreditHour = maxTotalCreditHour;
-  //  }
+//    public int getMaxTotalCreditHour() {
+//        return maxTotalCreditHour;
+//    }
+//
+//    public void setMaxTotalCreditHour(int maxTotalCreditHour) {
+//        this.maxTotalCreditHour = maxTotalCreditHour;
+//    }
 
     public void setProgrammeDurationInMonths(int programmeDurationInMonths) {
         this.programmeDurationInMonths = programmeDurationInMonths;
