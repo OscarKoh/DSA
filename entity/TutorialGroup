@@ -1,0 +1,51 @@
+package entity;
+
+import adt.ArrayList;
+import adt.ListInterface;
+
+public class TutorialGroup {
+
+    private String groupId;
+    private String groupName;
+    private Programme programme;
+    private ListInterface<Student> studentList;
+    private ListInterface<Team> teamList;
+    private ListInterface<Course> courseList;
+
+    public TutorialGroup(String groupId, String groupName) {
+        this.groupId = groupId;
+        this.groupName = groupName;
+        this.studentList = new ArrayList<>();
+        this.teamList = new ArrayList<>();
+        this.courseList = new ArrayList<>();
+    }
+
+    public ListInterface<Student> getStudentLists() {
+        return studentList;
+    }
+
+    public ListInterface<Team> getTeamLists() {
+        return teamList;
+    }
+
+    public ListInterface<Course> getCourseLists() {
+        return courseList;
+    }
+
+    public Programme getProgramme() {
+        return programme;
+    }
+
+    public void setProgramme(Programme programme) {
+        this.programme = programme;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+}
