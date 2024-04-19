@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package entity;
+package Entity;
 
 import adt.ListInterface;
 import adt.ArrayList;
@@ -22,7 +22,8 @@ public class Student implements Serializable {
     private String programme;
     private ListInterface<Course> courses = new ArrayList<>();
     private ListInterface<RegisteredCourse> registeredCourses;
-
+    private ListInterface<Team> team;
+    private ListInterface<TutorialGroup> tutorialGroup;
 
     public Student() {
     }
@@ -34,6 +35,8 @@ public class Student implements Serializable {
         this.contact_number = contact_number;
         this.programme = programme;
         this.registeredCourses = new ArrayList<>();
+        this.team = new ArrayList<>();
+        this.tutorialGroup = new ArrayList<>();
     }
 
     public String getProgramme() {
@@ -58,6 +61,14 @@ public class Student implements Serializable {
 
     public void setRegisteredCourses(ListInterface<RegisteredCourse> registeredCourses) {
         this.registeredCourses = registeredCourses;
+    }
+
+    public ListInterface<Team> getTeam() {
+        return team;
+    }
+
+    public ListInterface<TutorialGroup> getTutorialGroup() {
+        return tutorialGroup;
     }
 
     public String getIC() {
