@@ -19,7 +19,9 @@ public class Main {
             System.out.println("Choose an option:");
             System.out.println("1. Course Management System");
             System.out.println("2. Student Registration System");
-            System.out.println("5. Assignment Team Management System");
+            System.out.println("4. Assignment Team Management System");
+            System.out.println("5. Exit");
+
             while (true) {
                 try {
                     System.out.print("Enter your choice: ");
@@ -34,9 +36,12 @@ public class Main {
                         case 2:
                             StudentRegistration.studentRegistration();
                             break;
-                        case 5:
+                        case 4:
                             TeamManagementUI.teamManagementSystem();
-                            
+
+                        case 5:
+                            System.exit(0);
+
                         default:
                             System.out.println("Invalid choice. Please enter a valid option.");
                     }
