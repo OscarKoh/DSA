@@ -35,6 +35,7 @@ public class TeamManagementUI {
         ListInterface<Course> courseList = ManageCourse.getCourseList();
         ListInterface<Team> teamList = ManageTutorialTeam.getTeamList();
         ListInterface<Student> teamMembers = ManageStudentTeam.getTeamMembers();
+        ListInterface<Student> groupStudents = ManageTutorialGroup.getStudentList();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -139,7 +140,7 @@ public class TeamManagementUI {
                             if (teamPosition != -1) {
                                 selectedTeam = actualTeamList.get(teamPosition - 1);
                                 //Find the selected student Id
-                                selectedStudentId = availableStudents(selectedGroup, selectedTeam, scanner, selectedCourse);
+                                selectedStudentId = availableStudents(selectedGroup, selectedTeam, scanner, selectedCourse, groupStudents);
                                 if (selectedStudentId != -1) {
                                     //List all student in the tutorial group to find the selected student 
                                     for (int i = 0; i < selectedGroup.getStudentLists().size(); i++) {
@@ -400,32 +401,31 @@ public class TeamManagementUI {
     }
 
     //To only view and allow user to select the available student (student that yet to have team for the selected course)
-    public static int availableStudents(TutorialGroup selectedGroup, Team selectedTeam, Scanner scanner, Course selectedCourse) {
+    public static int availableStudents(TutorialGroup selectedGroup, Team selectedTeam, Scanner scanner, Course selectedCourse, ListInterface<Student> groupStudents) {
         int selectedStudentId = -1;
 
         ListInterface<Student> availableStudentLists = new ArrayList<>();
 
-        for (int i = 0; i < selectedGroup.getStudentLists().size(); i++) {
+        for (int i = 0; i < groupStudents.size(); i++) {
             boolean hasTeam = false;
+            //Check if the student belongs to the selected group
+            Student student = groupStudents.get(i);
 
-            //Get each student in the group
-            Student availableStudent = selectedGroup.getStudentLists().get(i);
+            if (student.getGroup().getGroupId().equals(selectedGroup.getGroupId())) {
+                for (int k = 0; k < student.getTeamLists().size(); k++) {
+                    //If student already have team for the course 
+                    if (student.getTeamLists().get(k).getCourse().equals(selectedCourse)) {
+                        hasTeam = true;
+                        break;
+                    }
+                }
 
-            //Compare all of the teams of that student, if don't have team for the selected course add the student as an avialble student
-            for (int k = 0; k < availableStudent.getTeamLists().size(); k++) {
-                //If student already have team for the course 
-                if (availableStudent.getTeamLists().get(k).getCourse().equals(selectedCourse)) {
-                    hasTeam = true;
-                    break;
+                if (!hasTeam) {
+                    availableStudentLists.add(student);
                 }
             }
-
-            if (!hasTeam) {
-                availableStudentLists.add(availableStudent);
-            }
-
         }
-
+        
         if (availableStudentLists.isEmpty()) {
             System.out.println("No available students now.");
         } else {
@@ -439,6 +439,19 @@ public class TeamManagementUI {
             selectedStudentId = availableStudentLists.get(studentPosition - 1).getStudentID();
 
         }
+//        if (groupStudents.isEmpty()) {
+//            System.out.println("No available students now.");
+//        } else {
+//            System.out.println("Available students: ");
+//            for (int k = 0; k < groupStudents.size(); k++) {
+//                System.out.println((k + 1) + ". " + groupStudents.get(k));
+//            }
+//            System.out.println("\nSelect the student to be added: ");
+//            int studentPosition = scanner.nextInt();
+//
+//            selectedStudentId = groupStudents.get(studentPosition - 1).getStudentID();
+//
+//        }
 
         return selectedStudentId;
     }
