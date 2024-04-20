@@ -3,11 +3,19 @@ package init;
 import control.ManageProgramme;
 import control.ManageCourse;
 import adt.ArrayList;
+import adt.ListInterface;
 import entity.Course;
 import entity.RegisteredCourse;
 import control.ManageRegistered;
 import static control.ManageProgramme.findProgrammeByName;
 import control.ManageStudent;
+import control.ManageStudentTeam;
+import control.ManageTutorialGroup;
+import control.ManageTutorialTeam;
+import entity.Programme;
+import entity.Student;
+import entity.Team;
+import entity.TutorialGroup;
 
 public class DataInitializer {
 
@@ -16,6 +24,9 @@ public class DataInitializer {
         initializeCourse();
         initializeStudent();
         initializeRegistration();
+        initializeTutorialGroup();
+        initializeStudentGroup();
+        initializeTeamSubsytem();
     }
 
     public static void initializeProgramme() {
@@ -68,7 +79,7 @@ public class DataInitializer {
             "Web Design and Development", "System Analysis And Design", "Money And Banking",
             "Marketing Of Financial Services", "English For Career Preparation",
             "Mobile Application Development", "Introduction To Computer Security",};
-       
+
         // Define course types for each course
         ArrayList<Course.CourseType>[] courseTypeArrays = new ArrayList[courseCodes.length];
         for (int i = 0; i < courseCodes.length; i++) {
@@ -89,7 +100,6 @@ public class DataInitializer {
                 courseTypeArrays[i].add(Course.CourseType.PRACTICAL);
             }
 
-            
         }
 
         double[] fees = {
@@ -97,7 +107,7 @@ public class DataInitializer {
             670, 899, 995, 555, 677, 777
         };
 
-         String[] programmeNames = {
+        String[] programmeNames = {
             "Diploma in Accounting",
             "Diploma in Banking and Finance",
             "Diploma in Software Engineering",
@@ -110,7 +120,7 @@ public class DataInitializer {
 
         // Loop through each course and initialize it
         for (int i = 0; i < courseCodes.length; i++) {
-            ManageCourse.addCourse(courseCodes[i], courseNames[i],  3, courseTypeArrays[i], fees[i]);
+            ManageCourse.addCourse(courseCodes[i], courseNames[i], 3, courseTypeArrays[i], fees[i]);
         }
         ManageCourse.addProgrammeToCourse(findProgrammeByName(programmeNames[0]), ManageCourse.getCourseList().get(0));
         ManageCourse.addProgrammeToCourse(findProgrammeByName(programmeNames[0]), ManageCourse.getCourseList().get(1));
@@ -212,6 +222,73 @@ public class DataInitializer {
 
         for (RegisteredCourse regCourse : regCourses) {
             ManageRegistered.addRegistered(regCourse);
+        }
+    }
+
+    public static void initializeTutorialGroup() {
+        String[] groupIds = {
+            "RACG1", "RACG2", "RACG3",
+            "RBFG1", "RBFG2", "RBFG3",
+            "RSWG1", "RSWG2", "RSWG3",};
+
+        String[] programmeCodes = {
+            "RAC", "RAC", "RAC",
+            "RBF", "RBF", "RBF",
+            "RSW", "RSW", "RSW",};
+
+        for (int i = 0; i < groupIds.length; i++) {
+            TutorialGroup group = new TutorialGroup(groupIds[i], ManageTutorialGroup.getProgrammeByCode(programmeCodes[i]));
+            ManageTutorialGroup.addTutorialGroup(group, group.getProgramme());
+        }
+    }
+
+    public static void initializeStudentGroup() {
+        ListInterface<Student> studentList = ManageStudent.getStudentList();
+        ListInterface<TutorialGroup> groupList = ManageTutorialGroup.getGroupList();
+
+        for (int i = 0; i < studentList.size(); i++) {
+            ManageTutorialGroup.addStudentsToTutorialGroup(groupList.get(1), studentList.get(i));
+        }
+
+    }
+
+    public static void initializeTeamSubsytem() {
+
+        ListInterface<TutorialGroup> groupList = ManageTutorialGroup.getGroupList();
+        ListInterface<Course> courseList = ManageCourse.getCourseList();
+        ListInterface<Student> studentList = ManageStudent.getStudentList();
+
+        Team t1 = new Team("RACG1OOPT1");
+        Team t2 = new Team("RACG1OOPT2");
+        Team t3 = new Team("RACG1DBT1");
+        Team t4 = new Team("RACG2DBT2");
+
+        TutorialGroup g1 = groupList.get(0);
+        //TutorialGroup g2 = groupList.get(1);
+
+        Course c1 = courseList.get(0);
+        Course c2 = courseList.get(1);
+
+        //Set Team size for course
+        c1.setTeamSize(10);
+        c2.setTeamSize(4);
+
+        ManageTutorialTeam.createTeam(t1, g1, c1);
+        ManageTutorialTeam.createTeam(t2, g1, c1);
+        ManageTutorialTeam.createTeam(t3, g1, c2);
+        ManageTutorialTeam.createTeam(t4, g1, c2);
+
+        for (int i = 0; i < 12; i++) {
+            Student student = studentList.get(i);
+            if (i < 3) {
+                ManageStudentTeam.addStudentToTeam(student, t1);
+            } else if (i >= 3 && i < 6) {
+                ManageStudentTeam.addStudentToTeam(student, t2);
+            } else if (i >= 6 && i < 9) {
+                ManageStudentTeam.addStudentToTeam(student, t3);
+            } else {
+                ManageStudentTeam.addStudentToTeam(student, t4);
+            }
         }
     }
 
