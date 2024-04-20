@@ -747,7 +747,14 @@ public class CourseManagement {
                                 }
                             }
                             break;
-
+                            
+                        case 12:
+                            System.out.print("Enter faculty:");
+                            String faculty = scanner.nextLine();
+                            String coursesTakenByFaculty = listCoursesTakenByFaculties(faculty);
+                            System.out.println(coursesTakenByFaculty);
+                            break;
+                            
                         case 13:
                             while (true) {
                                 try {
