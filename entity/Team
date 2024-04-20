@@ -1,0 +1,81 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package entity;
+
+import adt.ArrayList;
+import adt.ListInterface;
+import java.io.Serializable;
+import java.util.Objects;
+
+public class Team implements Serializable {
+
+    private String teamId;
+    private TutorialGroup tutorialGroup;
+    private ListInterface<Student> studentLists;
+    private Course course;
+
+    public Team(String teamId) {
+        this.teamId = teamId;
+        this.studentLists = new ArrayList<>();
+    }
+
+    public void setTeamId(String teamId) {
+        this.teamId = teamId;
+    }
+
+    public String getTeamId() {
+        return teamId;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setTutorialGroup(TutorialGroup tutorialGroup) {
+        this.tutorialGroup = tutorialGroup;
+    }
+
+    public TutorialGroup getTutorialGroup() {
+        return tutorialGroup;
+    }
+
+    public ListInterface<Student> getTeamMembers() {
+        return studentLists;
+    }
+
+    public void amendTeamDetails(String newTeamId) {
+        this.teamId = newTeamId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Team team = (Team) o;
+        return Objects.equals(teamId, team.teamId);
+    }
+
+    public int compareTo(Team otherTeam) {
+        return this.teamId.compareTo(otherTeam.teamId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(teamId);
+    }
+
+    @Override
+    public String toString() {
+        return "Team ID: " + teamId;
+    }
+}
