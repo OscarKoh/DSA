@@ -1,5 +1,6 @@
 package boundary;
 
+import Boundary.TeamManagementUI;
 import init.DataInitializer;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -18,6 +19,7 @@ public class Main {
             System.out.println("Choose an option:");
             System.out.println("1. Course Management System");
             System.out.println("2. Student Registration System");
+            System.out.println("5. Assignment Team Management System");
             while (true) {
                 try {
                     System.out.print("Enter your choice: ");
@@ -32,6 +34,9 @@ public class Main {
                         case 2:
                             StudentRegistration.studentRegistration();
                             break;
+                        case 5:
+                            TeamManagementUI.teamManagementSystem();
+                            
                         default:
                             System.out.println("Invalid choice. Please enter a valid option.");
                     }
