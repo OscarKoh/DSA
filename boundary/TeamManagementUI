@@ -1,0 +1,667 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package Boundary;
+
+import adt.ArrayList;
+import adt.ListInterface;
+import control.ManageCourse;
+import control.ManageProgramme;
+import control.ManageStudentTeam;
+import static control.ManageStudentTeam.addStudentToTeam;
+import control.ManageTutorialGroup;
+import control.ManageTutorialTeam;
+import control.TeamSummary1;
+import control.TeamSummary2;
+import entity.Course;
+import entity.Programme;
+import entity.Student;
+import entity.Team;
+import entity.TutorialGroup;
+import init.DataInitializer;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+/**
+ *
+ * @author USER
+ */
+public class TeamManagementUI {
+
+    public static void teamManagementSystem() {
+        ListInterface<TutorialGroup> groupList = ManageTutorialGroup.getGroupList();
+        ListInterface<Programme> programmeList = ManageProgramme.getProgrammeList();
+        ListInterface<Course> courseList = ManageCourse.getCourseList();
+        ListInterface<Team> teamList = ManageTutorialTeam.getTeamList();
+        ListInterface<Student> teamMembers = ManageStudentTeam.getTeamMembers();
+
+        Scanner scanner = new Scanner(System.in);
+
+        int choice = 0;
+        do {
+            choice = displayControls(scanner);
+            boolean validProgramSelection;
+            Programme program = null;
+            int groupPosition;
+            TutorialGroup selectedGroup;
+            int coursePosition;
+            Course selectedCourse;
+            int teamPosition;
+            Team selectedTeam;
+            int selectedStudentId;
+            Student selectedStudent;
+            int studentPosition;
+            boolean canMerge;
+            ListInterface<Team> actualTeamList;
+            switch (choice) {
+                case 1:
+                    //Create team 
+                    //1. List program and select one
+                    program = selectProgram(scanner, programmeList);
+
+                    //2. List group of the selected program and select one group
+                    groupPosition = readGroupPositionInput(scanner, program);
+                    selectedGroup = program.getGroupLists().get(groupPosition - 1);
+
+                    //3. List courses taken by the selected group and select a course to create teams 
+                    coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                    selectedCourse = selectedGroup.getProgramme().getCourseList().get(coursePosition - 1);
+
+                    //5. Set team size for the course (if haven't set yet)
+                    setTeamSizeForCourse(scanner, selectedCourse);
+
+                    //6. Create teams 
+                    createTeams(scanner, selectedGroup, selectedCourse, teamList);
+
+                    break;
+
+                case 2:
+                    //Remove team 
+                    //1. List program and select one
+                    program = selectProgram(scanner, programmeList);
+
+                    //2. List group of the selected program and select one group
+                    groupPosition = readGroupPositionInput(scanner, program);
+                    if (groupPosition != -1) {
+                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                        coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                        if (coursePosition != -1) {
+                            selectedCourse = program.getCourseList().get(coursePosition - 1);
+                            //Get the actual team list of the selected course for the selected group 
+                            actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
+                            teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
+                            if (teamPosition != -1) {
+                                selectedTeam = actualTeamList.get(teamPosition - 1);
+                                ManageTutorialTeam.removeTeam(selectedTeam, selectedGroup, selectedCourse);
+                            }
+                        }
+                    }
+                    break;
+
+                case 3:
+                    //Amend team details 
+
+                    // 1. List program and select one validProgramSelection = false;
+                    program = selectProgram(scanner, programmeList);
+
+                    //2. List group of the selected program and select one group
+                    groupPosition = readGroupPositionInput(scanner, program);
+                    if (groupPosition != -1) {
+                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                        coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                        if (coursePosition != -1) {
+                            selectedCourse = program.getCourseList().get(coursePosition - 1);
+                            actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
+                            teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
+                            if (teamPosition != -1) {
+                                selectedTeam = actualTeamList.get(teamPosition - 1);
+                                amendTeamDetails(scanner, selectedTeam, teamList);
+                            }
+                        }
+                    }
+
+                    break;
+
+                case 4:
+                    //Add students into team 
+                    program = selectProgram(scanner, programmeList);
+
+                    //2. List group of the selected program and select one group
+                    groupPosition = readGroupPositionInput(scanner, program);
+                    if (groupPosition != -1) {
+                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                        coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                        if (coursePosition != -1) {
+                            selectedCourse = program.getCourseList().get(coursePosition - 1);
+                            actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
+                            teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
+                            if (teamPosition != -1) {
+                                selectedTeam = actualTeamList.get(teamPosition - 1);
+                                //Find the selected student Id
+                                selectedStudentId = availableStudents(selectedGroup, selectedTeam, scanner, selectedCourse);
+                                if (selectedStudentId != -1) {
+                                    //List all student in the tutorial group to find the selected student 
+                                    for (int i = 0; i < selectedGroup.getStudentLists().size(); i++) {
+                                        //if the student id = selected student id, add the student into the team 
+                                        if (selectedGroup.getStudentLists().get(i).getStudentID() == selectedStudentId) {
+                                            addStudentToTeam(selectedGroup.getStudentLists().get(i), selectedTeam);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+
+                case 5:
+                    //Remove student 
+                    program = selectProgram(scanner, programmeList);
+                    //2. List group of the selected program and select one group
+                    groupPosition = readGroupPositionInput(scanner, program);
+                    if (groupPosition != -1) {
+                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                        coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                        if (coursePosition != -1) {
+                            selectedCourse = program.getCourseList().get(coursePosition - 1);
+                            actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
+                            teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
+                            if (teamPosition != -1) {
+                                selectedTeam = actualTeamList.get(teamPosition - 1);
+                                studentPosition = readStudentPositionInput(scanner, selectedTeam, selectedCourse);
+                                if (studentPosition != -1) {
+                                    selectedStudent = selectedTeam.getTeamMembers().get(studentPosition - 1);
+                                    ManageStudentTeam.removeStudentFromTeam(selectedStudent, selectedTeam, studentPosition);
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+
+                case 6:
+                    //Merge Teams 
+                    program = selectProgram(scanner, programmeList);
+                    //2. List group of the selected program and select one group
+                    groupPosition = readGroupPositionInput(scanner, program);
+                    if (groupPosition != -1) {
+                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                        coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                        if (coursePosition != -1) {
+                            selectedCourse = program.getCourseList().get(coursePosition - 1);
+                            actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
+                            canMerge = checkMerge(actualTeamList, selectedCourse);
+                            if (!canMerge) {
+                                System.out.println("Cannot merge teams. No suitable pairs found or combined size exceeds maximum team size.");
+                            } else {
+                                mergeTeams(selectedCourse, scanner, selectedGroup, actualTeamList);
+                            }
+                        }
+                    }
+
+                    break;
+
+                case 7:
+                    //List teams 
+                    program = selectProgram(scanner, programmeList);
+
+                    //2. List group of the selected program and select one group
+                    groupPosition = readGroupPositionInput(scanner, program);
+                    if (groupPosition != -1) {
+                        //Selected a group
+                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                        ManageTutorialTeam.listTeams(selectedGroup);
+                    }
+
+                    break;
+
+                case 8:
+                    //List students under a team
+                    program = selectProgram(scanner, programmeList);
+
+                    //2. List group of the selected program and select one group
+                    groupPosition = readGroupPositionInput(scanner, program);
+                    if (groupPosition != -1) {
+                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                        coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                        if (coursePosition != -1) {
+                            selectedCourse = program.getCourseList().get(coursePosition - 1);
+                            actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
+                            teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
+                            if (teamPosition != -1) {
+                                selectedTeam = actualTeamList.get(teamPosition - 1);
+                                ManageStudentTeam.listTeamStudents(selectedTeam);
+                            }
+                        }
+                    }
+
+                    break;
+
+                case 9:
+                    TeamSummary1 teamSummary1 = new TeamSummary1();
+                    teamSummary1.start();
+
+                    break;
+
+                case 10:
+                    TeamSummary2 teamSummary2 = new TeamSummary2();
+                    teamSummary2.start();
+                    break;
+
+                case 11:
+                    choice = 11;
+                    break;
+
+            }
+
+        } while (choice != 11);
+
+    }
+
+    public static Programme selectProgram(Scanner scanner, ListInterface<Programme> programmeList) {
+        boolean validProgramSelection = false;
+        Programme program = null;
+
+        while (!validProgramSelection) {
+            try {
+                // List all programmes
+                System.out.println(" ");
+                for (int i = 0; i < programmeList.size(); i++) {
+                    System.out.println((i + 1) + ". " + programmeList.get(i).getProgrammeName());
+                }
+
+                // Select the programme
+                System.out.print("\nEnter the program number to view: ");
+                int programPosition = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
+
+                if (programPosition < 1 || programPosition > programmeList.size()) {
+                    throw new IllegalArgumentException("\nInvalid program number. Please enter a number between 1 and " + programmeList.size() + ".");
+                }
+
+                // Retrieve the selected program
+                program = programmeList.get(programPosition - 1);
+                validProgramSelection = true; // Update the flag to exit the loop
+            } catch (InputMismatchException e) {
+                System.out.println("\nInvalid input. Please enter a valid number.");
+                scanner.nextLine(); // Consume the invalid input
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        return program;
+    }
+
+    public static ListInterface<Team> getActualTeamList(Course selectedCourse, TutorialGroup group) {
+        ListInterface<Team> actualTeamList = new ArrayList<>();
+        //Retreive teams that belongs to the selected group (because course teamList contains all groups' teams)
+        for (int i = 0; i < selectedCourse.getTeamLists().size(); i++) {
+            if (selectedCourse.getTeamLists().get(i).getTutorialGroup().equals(group)) {
+                actualTeamList.add(selectedCourse.getTeamLists().get(i));
+            }
+        }
+
+        return actualTeamList;
+    }
+
+    public static void mergeTeams(Course course, Scanner scanner, TutorialGroup selectedGroup, ListInterface<Team> actualTeamList) {
+        System.out.println("Maximum team size for " + course.getTeamSize());
+        System.out.println("Teams for " + course.getName());
+        //List out all of the teams in the selected course 
+        for (int i = 0; i < actualTeamList.size(); i++) {
+            Team team = actualTeamList.get(i);
+            System.out.println((i + 1) + ". " + team + " current size: " + team.getTeamMembers().size());
+        }
+
+        int team1Position = -1;
+        int team2Position = -1;
+
+        while (true) {
+            System.out.print("\nSelect 2 teams to be merged: ");
+            System.out.print("\nSelect team 1 : ");
+            team1Position = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+            System.out.print("\nSelect team 2 : ");
+            team2Position = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            if (team1Position < 1 || team1Position > actualTeamList.size() || team2Position < 1 || team2Position > actualTeamList.size()) {
+                System.out.println("Invalid input. Team positions are out of range. Please select again.");
+            } else if (team1Position == team2Position) {
+                System.out.println("Invalid input. Team positions cannot be the same. Please select again.");
+                //if the combined size is larger than the max size 
+            } else if (((actualTeamList.get(team1Position - 1).getTeamMembers().size()) + actualTeamList.get(team2Position - 1).getTeamMembers().size()) > course.getTeamSize()) {
+                System.out.println("The size of the merged team exceeds the maximum. Please select again.");
+            } else {
+                break; // Break out of the loop if all conditions are fulfilled
+            }
+        }
+
+        ManageTutorialTeam.mergeTeams(team1Position, team2Position, course, scanner, selectedGroup, actualTeamList);
+    }
+
+    public static boolean checkMerge(ListInterface<Team> actualTeamList, Course course) {
+        boolean canMerge = false;
+        if (actualTeamList.size() < 2) {
+            System.out.println("\nNumber of team insufficient, unable to merge teams.");
+        } else {
+            // Check if there are at least two teams that can be merged
+            for (int i = 0; i < actualTeamList.size() - 1; i++) {
+                for (int j = i + 1; j < actualTeamList.size(); j++) {
+                    Team team1 = actualTeamList.get(i);
+                    Team team2 = actualTeamList.get(j);
+                    int combinedSize = team1.getTeamMembers().size() + team2.getTeamMembers().size();
+                    if (combinedSize <= course.getTeamSize()) {
+                        canMerge = true;
+                        break;
+                    }
+                }
+                if (canMerge) {
+                    break;
+                }
+            }
+        }
+
+        return canMerge;
+    }
+
+    public static int readStudentPositionInput(Scanner scanner, Team team, Course course) {
+        int studentPosition = -1;
+
+        if (team.getTeamMembers().isEmpty()) {
+            System.out.println("\nCurrently no students for " + team.getTeamId() + " for " + course.getName());
+            return studentPosition;
+        }
+
+        while (studentPosition < 1 || studentPosition > team.getTeamMembers().size()) {
+            System.out.println("\nStudents for " + team.getTeamId() + ":");
+            for (int i = 0; i < team.getTeamMembers().size(); i++) {
+                Student student = team.getTeamMembers().get(i);
+                System.out.println((i + 1) + ". " + student);
+            }
+
+            try {
+                System.out.print("\nSelect a student : ");
+                studentPosition = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+
+                if (studentPosition < 1 || studentPosition > team.getTeamMembers().size()) {
+                    System.out.println("Invalid input. Please enter a number between 1 and " + team.getTeamMembers().size() + ".");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Consume the invalid input
+            }
+        }
+
+        return studentPosition;
+    }
+
+    //To only view and allow user to select the available student (student that yet to have team for the selected course)
+    public static int availableStudents(TutorialGroup selectedGroup, Team selectedTeam, Scanner scanner, Course selectedCourse) {
+        int selectedStudentId = -1;
+
+        ListInterface<Student> availableStudentLists = new ArrayList<>();
+
+        for (int i = 0; i < selectedGroup.getStudentLists().size(); i++) {
+            boolean hasTeam = false;
+
+            //Get each student in the group
+            Student availableStudent = selectedGroup.getStudentLists().get(i);
+
+            //Compare all of the teams of that student, if don't have team for the selected course add the student as an avialble student
+            for (int k = 0; k < availableStudent.getTeamLists().size(); k++) {
+                //If student already have team for the course 
+                if (availableStudent.getTeamLists().get(k).getCourse().equals(selectedCourse)) {
+                    hasTeam = true;
+                    break;
+                }
+            }
+
+            if (!hasTeam) {
+                availableStudentLists.add(availableStudent);
+            }
+
+        }
+
+        if (availableStudentLists.isEmpty()) {
+            System.out.println("No available students now.");
+        } else {
+            System.out.println("Available students: ");
+            for (int k = 0; k < availableStudentLists.size(); k++) {
+                System.out.println((k + 1) + ". " + availableStudentLists.get(k));
+            }
+            System.out.println("\nSelect the student to be added: ");
+            int studentPosition = scanner.nextInt();
+
+            selectedStudentId = availableStudentLists.get(studentPosition - 1).getStudentID();
+
+        }
+
+        return selectedStudentId;
+    }
+
+    public static void amendTeamDetails(Scanner scanner, Team team, ListInterface<Team> teamList) {
+        boolean duplicate = false;
+        String newTeamId;
+
+        do {
+            duplicate = false; // Reset duplicate flag for each iteration
+            System.out.print("\nEnter New Team ID: ");
+            newTeamId = scanner.nextLine();
+
+            // Check if the entered team ID is a duplicate
+            for (int i = 0; i < teamList.size(); i++) {
+                if (teamList.get(i).getTeamId().equals(newTeamId)) {
+                    System.out.println("Duplicate team id, please enter another one.");
+                    duplicate = true;
+                    break; // No need to continue checking once a duplicate is found
+                }
+            }
+        } while (duplicate); // Continue looping until a unique team ID is entered
+
+        team.amendTeamDetails(newTeamId);
+    }
+
+    public static int readTeamPositionInput(Scanner scanner, ListInterface<Team> actualTeamList, TutorialGroup group, Course course) {
+        int teamPosition = -1;
+
+        if (actualTeamList.isEmpty()) {
+            System.out.println("\nCurrently no teams available for " + group.getGroupId() + " for " + course.getName());
+            return teamPosition;
+        }
+
+        while (teamPosition < 1 || teamPosition > actualTeamList.size()) {
+            System.out.println("\nTeams for " + course.getName() + ":");
+            for (int i = 0; i < actualTeamList.size(); i++) {
+                Team team = actualTeamList.get(i);
+                System.out.println((i + 1) + ". " + team);
+            }
+
+            try {
+                System.out.print("\nSelect a team : ");
+                teamPosition = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+
+                if (teamPosition < 1 || teamPosition > actualTeamList.size()) {
+                    System.out.println("Invalid input. Please enter a number between 1 and " + actualTeamList.size() + ".");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Consume the invalid input
+            }
+        }
+
+        return teamPosition;
+    }
+
+    public static void createTeams(Scanner scanner, TutorialGroup selectedGroup, Course course, ListInterface<Team> teamList) {
+        while (true) {
+            try {
+                System.out.print("\nEnter the number of teams you want to create: ");
+                int numTeams = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+
+                if (numTeams <= 0) {
+                    System.out.println("Please enter a number greater than zero.");
+                    continue; // Restart the loop to prompt for input again
+                }
+
+                for (int i = 0; i < numTeams; i++) {
+                    try {
+                        Team newTeam = createTeam(scanner, teamList);
+
+                        ManageTutorialTeam.createTeam(newTeam, selectedGroup, course);
+                    } catch (Exception e) {
+                        System.out.println("Error creating team: " + e.getMessage());
+                    }
+                }
+                break; // Break out of the loop if input and team creation are successful
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input for number of teams. Please enter an integer.");
+                scanner.nextLine(); // Consume the invalid input
+            }
+        }
+    }
+
+    public static Team createTeam(Scanner scanner, ListInterface<Team> teamList) {
+        boolean duplicate = false;
+        String teamId;
+
+        do {
+            duplicate = false; // Reset duplicate flag for each iteration
+            System.out.print("\nEnter Team ID: ");
+            teamId = scanner.nextLine();
+
+            // Check if the entered team ID is a duplicate
+            for (int i = 0; i < teamList.size(); i++) {
+                if (teamList.get(i).getTeamId().equals(teamId)) {
+                    System.out.println("Duplicate team id, please enter another one.");
+                    duplicate = true;
+                    break; // No need to continue checking once a duplicate is found
+                }
+            }
+        } while (duplicate); // Continue looping until a unique team ID is entered
+
+        return new Team(teamId);
+    }
+
+    public static void setTeamSizeForCourse(Scanner scanner, Course selectedCourse) {
+        if (selectedCourse.getTeamSize() == 0) {
+            int size = -1;
+            boolean validSizeInput = false;
+
+            while (!validSizeInput) {
+                try {
+                    System.out.print("Enter team size for course " + selectedCourse.getName() + ": ");
+                    size = scanner.nextInt();
+                    validSizeInput = true; // Set to true to exit the loop if input is valid
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter valid numbers.");
+                    scanner.nextLine(); // Consume the invalid input
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+
+            selectedCourse.setTeamSize(size);
+            System.out.println("Maximum team size for " + selectedCourse.getName() + " has set to " + size);
+        }
+    }
+
+    public static int readCoursePositionInput(Scanner scanner, Programme selectedProgram, TutorialGroup group) {
+        int coursePosition = -1;
+
+        if (selectedProgram.getCourseList().isEmpty()) {
+            System.out.println("\nCurrently no courses available");
+            return coursePosition;
+        }
+
+        while (coursePosition < 1 || coursePosition > selectedProgram.getCourseList().size()) {
+            System.out.println("\nCourses for " + group.getGroupId() + ":");
+            for (int i = 0; i < selectedProgram.getCourseList().size(); i++) {
+                Course course = selectedProgram.getCourseList().get(i);
+                System.out.println((i + 1) + ". " + course.getName());
+            }
+
+            try {
+                System.out.print("\nSelect a course : ");
+                coursePosition = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+
+                if (coursePosition < 1 || coursePosition > selectedProgram.getCourseList().size()) {
+                    System.out.println("Invalid input. Please enter a number between 1 and " + selectedProgram.getCourseList().size() + ".");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Consume the invalid input
+            }
+        }
+
+        return coursePosition;
+    }
+
+    public static int readGroupPositionInput(Scanner scanner, Programme program) {
+        int groupPosition = -1;
+
+        if (program.getGroupLists().isEmpty()) {
+            System.out.println("\nCurrently no groups available for " + program.getProgrammeName());
+            return groupPosition;
+        }
+
+        while (groupPosition < 1 || groupPosition > program.getGroupLists().size()) {
+            System.out.println("\nTutorial Groups for " + program.getProgrammeName() + ":");
+            for (int i = 0; i < program.getGroupLists().size(); i++) {
+                TutorialGroup tutorialGroup = program.getGroupLists().get(i);
+                System.out.println((i + 1) + ". " + tutorialGroup.getGroupId());
+            }
+
+            try {
+                System.out.print("\nSelect a group: ");
+                groupPosition = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+
+                if (groupPosition < 1 || groupPosition > program.getGroupLists().size()) {
+                    System.out.println("Invalid input. Please enter a number between 1 and " + program.getGroupLists().size() + ".");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Consume the invalid input
+            }
+        }
+
+        return groupPosition;
+    }
+
+    public static int displayControls(Scanner scanner) {
+        int choice = -1;
+        while (choice < 1 || choice > 11) {
+            System.out.println("\nAssignment Team Management ");
+            System.out.println("1. Create teams");
+            System.out.println("2. Remove team");
+            System.out.println("3. Amend team details");
+            System.out.println("4. Add students to teams");
+            System.out.println("5. Remove students from teams");
+            System.out.println("6. Merge teams");
+            System.out.println("7. List teams");
+            System.out.println("8. List students under a team");
+            System.out.println("9. Teams summary report for tutorial groups");
+            System.out.println("10.Students summary report for teams");
+            System.out.println("11.Back To Main Menu");
+            System.out.print("\nEnter a selection (1 - 11): ");
+            try {
+                choice = scanner.nextInt();
+                if (choice < 1 || choice > 11) {
+                    System.out.println("Invalid choice. Please enter a number between 1 and 11.\n");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Consume the invalid input
+            }
+        }
+        return choice;
+    }
+
+}
