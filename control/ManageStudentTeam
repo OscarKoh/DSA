@@ -1,0 +1,73 @@
+package control;
+
+import adt.ArrayList;
+import adt.ListInterface;
+import entity.Programme;
+import entity.Student;
+import entity.Team;
+import java.util.Iterator;
+
+/**
+ *
+ * @author Oscar Koh Yung Qin
+ */
+public class ManageStudentTeam {
+
+    private static ListInterface<Student> teamMembers = new ArrayList<>();
+
+    public static ListInterface<Student> getTeamMembers() {
+        return teamMembers;
+    }
+
+    public static void addStudentToTeam(Student student, Team team) {
+        if (team.getTeamMembers().size() >= team.getCourse().getTeamSize()) {
+            System.out.println("Cannot add student. Team has reached maximum size.");
+        } else {
+            student.getTeamLists().add(team);
+            team.getTeamMembers().add(student); // Add the student to the team's student list
+            teamMembers.add(student);
+        }
+    }
+
+    public static void removeStudentFromTeam(Student student, Team team, int studentPosition) {
+        // Remove team in team list of student object
+        // Students have many teams -> identify which team he is going to be removed
+        ListInterface<Team> teamLists = student.getTeamLists();
+        for (int i = 0; i < teamLists.size(); i++) {
+            Team studentTeam = teamLists.get(i);
+            if (studentTeam.getTeamId().equals(team.getTeamId())) {
+                teamLists.remove(i);
+                i--; // Adjust the index since we removed an element
+            }
+        }
+
+        for (int k = 0; k < team.getTeamMembers().size(); k++) {
+            if (team.getTeamMembers().get(k).getIC().equals(student.getIC())) {
+                // Remove student from the team's list of members
+                team.getTeamMembers().remove(k);
+            }
+        }
+
+        for (int j = 0; j < teamMembers.size(); j++) {
+            if (teamMembers.get(j).getStudentID() == student.getStudentID()) {
+                teamMembers.remove(j);
+            }
+        }
+
+    }
+    
+    public static void listTeamStudents(Team team) {
+        if (team.getTeamMembers().isEmpty()) {
+            System.out.println("\nCurrently no students available for " + team.getTeamId());
+        } else {
+            System.out.println("Students for " + team.getTeamId() + ":");
+            Iterator<Student> iterator = team.getTeamMembers().getIterator();
+            while (iterator.hasNext()) {
+                Student student = iterator.next();
+                System.out.println(student);
+            }
+        }
+
+    }
+
+}
