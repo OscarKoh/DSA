@@ -20,10 +20,10 @@ public class Student implements Serializable {
     private String IC;
     private String contact_number;
     private String programme;
+    private TutorialGroup group;
     private ListInterface<Course> courses = new ArrayList<>();
     private ListInterface<RegisteredCourse> registeredCourses;
     private ListInterface<Team> teamList;
-    private ListInterface<TutorialGroup> groupList;
 
     public Student() {
     }
@@ -36,7 +36,6 @@ public class Student implements Serializable {
         this.programme = programme;
         this.registeredCourses = new ArrayList<>();
         this.teamList = new ArrayList<>();
-        this.groupList = new ArrayList<>();
     }
 
     public String getProgramme() {
@@ -66,9 +65,13 @@ public class Student implements Serializable {
     public ListInterface<Team> getTeamLists() {
         return teamList;
     }
+    
+    public void setGroup(TutorialGroup group){
+        this.group = group;
+    }
 
-    public ListInterface<TutorialGroup> getGroupList() {
-        return groupList;
+    public TutorialGroup getGroup() {
+        return group;
     }
 
     public String getIC() {
