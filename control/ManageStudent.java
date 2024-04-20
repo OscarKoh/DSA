@@ -233,31 +233,7 @@ public class ManageStudent {
 
         return totalBill;
     }
-
-    public static int calculateTotalCreditHours(Student student, ListInterface<Course> courseList) {
-        int totalCreditHours = 0;
-        ListInterface<RegisteredCourse> registeredCourses = student.getRegisteredCourses();
-        for (int i = 0; i < registeredCourses.size(); i++) {
-            RegisteredCourse registeredCourse = registeredCourses.get(i);
-            Course course = getCourseByCode(courseList, registeredCourse.getCode());
-            if (course != null) {
-                totalCreditHours += course.getCreditHour();
-            }
-        }
-        return totalCreditHours;
-    }
-
-    // Method to get course by code
-    private static Course getCourseByCode(ListInterface<Course> courseList, String courseCode) {
-        for (int i = 0; i < courseList.size(); i++) {
-            Course course = courseList.get(i);
-            if (course.getCode().equals(courseCode)) {
-                return course;
-            }
-        }
-        return null; // Course not found
-    }
-
+    
     public static Programme getProgrammeByCode(ListInterface<Programme> programmeList, String programmeCode) {
         for (int i = 0; i < programmeList.size(); i++) {
             Programme programme = programmeList.get(i);
@@ -267,20 +243,7 @@ public class ManageStudent {
         }
         return null; // Programme not found
     }
-
-    public static int calculateMaxCreditHours(Student student, ListInterface<Programme> programmeList) {
-        int maxCreditHours = 0;
-        Programme programme = getProgrammeByCode(programmeList, student.getProgramme());
-        if (programme != null) {
-            ListInterface<Course> programmeCourses = programme.getCourseList();
-            for (int i = 0; i < programmeCourses.size(); i++) {
-                Course course = programmeCourses.get(i);
-                maxCreditHours += course.getCreditHour();
-            }
-        }
-        return maxCreditHours;
-    }
-
+    
     public static int getNumberOfStudentsInProgramme(Programme programme, ListInterface<Student> studentList) {
         int count = 0;
         for (int i = 0; i < studentList.size(); i++) {
