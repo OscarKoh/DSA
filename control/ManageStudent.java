@@ -32,7 +32,7 @@ public class ManageStudent {
     }
 
     public static boolean validateName(String name) {
-        String regex = "[a-zA-Z]+";
+        String regex = "^[a-zA-Z ]+$";
         return name.matches(regex);
     }
 
