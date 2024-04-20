@@ -1,5 +1,6 @@
 package control;
 
+import DAO.courseDAO;
 import entity.Programme;
 import entity.Course;
 import adt.ListInterface;
@@ -38,7 +39,7 @@ public class ManageCourse {
         Course course = new Course(courseCode.toUpperCase(), courseName, courseTypes, creditHour, fee);
         courseList.add(course);
 //        System.out.println("You are successfully added a new course.");
-//        courseDao.saveToFile(courseList);
+        courseDAO.saveToFile(courseList);
         return true;
     }
 
@@ -82,7 +83,7 @@ public class ManageCourse {
                     programme.removeCourse(courses);
                 }
                 courseList.remove(i);
-//                courseDao.saveToFile(courseList);
+                courseDAO.saveToFile(courseList);
                 return true;
             }
         }
@@ -107,7 +108,6 @@ public class ManageCourse {
         int courseNumber = programme.getCourseList().search(course);
         programme.removeCourse(courseNumber);
         course.getProgrammesList().remove(proNum - 1);
-//        courseDao.saveToFile(courseList);
         System.out.println("Programme removed from course successfully.");
 
         return true;
@@ -115,15 +115,15 @@ public class ManageCourse {
 
     public static boolean addProgrammeToCourse(Programme programme, Course course) {
         if (course.getProgrammesList().search(programme) != -1) {
-            System.out.println("Programme " + programme.getProgrammeName() + " is already associated with course " + course.getName()+"\n");
+            System.out.println("Programme " + programme.getProgrammeName() + " is already associated with course " + course.getName() + "\n");
             return false;
         }
         if (programme.getCourseList().isFull()) {
-            System.out.println("Maximum number of courses reached for programme " + programme.getProgrammeName());
+            System.out.println("Maximum number of courses reached for programme " + programme.getProgrammeName()+"\n");
             return false;
         }
         if (course.getCreditHour() + programme.getCreditHour() > programme.getMaxTotalCreditHour()) {
-            System.out.println("Adding " + programme.getProgrammeName() + " to " + course.getName() + " exceeds total credit hour limit."+"\n");
+            System.out.println("Adding " + programme.getProgrammeName() + " to " + course.getName() + " exceeds total credit hour limit." + "\n");
             return false;
         }
         course.getProgrammesList().add(programme);
@@ -181,7 +181,7 @@ public class ManageCourse {
                     courseToUpdate.setFee(newFee);
                     int index = courseList.search(courseToUpdate);
                     courseList.amend(index, courseToUpdate);
-//                    courseDao.saveToFile(courseList);
+                    courseDAO.saveToFile(courseList);
                     // Update the total credit hours of the programme
                     ManageProgramme.updateProgrammeCreditHours(hoursDifference, programme);
                     System.out.println("You have successfully amended the course details.");
