@@ -1,0 +1,67 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package control;
+
+import adt.ListInterface;
+import entity.Programme;
+import entity.TutorialGroup;
+import adt.ArrayList;
+import entity.Programme;
+import entity.Student;
+
+/**
+ *
+ * @author USER
+ */
+public class ManageTutorialGroup {
+
+    private static ListInterface<Programme> programList = ManageProgramme.getProgrammeList();
+    private static ListInterface<TutorialGroup> groupList = new ArrayList<>();
+    private static ListInterface<Student> studentList = new ArrayList<>();
+
+    public static ListInterface<TutorialGroup> getGroupList() {
+        return groupList;
+    }
+
+    public static ListInterface<Student> getStudentList() {
+        return studentList;
+    }
+
+//    • Add a tutorial group to a programme 
+//Adding students to a tutorial group 
+    public static void addTutorialGroup(TutorialGroup group, Programme program) {
+        boolean groupExists = false;
+
+        for (int i = 0; i < groupList.size(); i++) {
+            if (groupList.get(i).getGroupId().equals(group.getGroupId())) {
+                groupExists = true;
+                break;
+            }
+        }
+
+        if (!groupExists) {
+            group.setProgramme(program);
+            program.getGroupLists().add(group);
+            groupList.add(group);
+        }
+
+    }
+
+    public static Programme getProgrammeByCode(String programmeCode) {
+        Programme program = null;
+        for (int i = 0; i < programList.size(); i++) {
+            if (programList.get(i).getProgrammeCode().equals(programmeCode)) {
+                program = programList.get(i);
+            }
+        }
+        return program;
+    }
+
+    public static void addStudentsToTutorialGroup(TutorialGroup group, Student student) {
+        student.setGroup(group);
+        group.getStudentLists().add(student);
+        studentList.add(student);
+    }
+}
