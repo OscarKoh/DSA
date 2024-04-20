@@ -21,6 +21,7 @@ import control.ManageCourse;
 import control.ManageProgramme;
 import static control.ManageRegistered.removeRegisteredCourse;
 import static control.ManageStudent.addStudent;
+import java.util.InputMismatchException;
 
 public class StudentRegistration {
 
@@ -45,9 +46,9 @@ public class StudentRegistration {
             System.out.println("6.  Add student to few courses");
             System.out.println("7.  Remove student from a course");
             System.out.println("8.  Student Bill");
-            System.out.println("9.  Maximum Credit Hours");
-            System.out.println("10. Summary Report Students In Programme");
-            System.out.println("11. Summary Report Students In Course");
+//            System.out.println("9.  Maximum Credit Hours");
+            System.out.println("9.  Summary Report Students In Programme");
+            System.out.println("10. Summary Report Students In Course");
             System.out.println("0.  Exit");
 
             System.out.print("Enter your option: ");
@@ -318,108 +319,111 @@ public class StudentRegistration {
                     Programme selectedProgramme = programmeList.get(programmeChoice - 1);
 
                     ListInterface<Course> availableCourses = selectedProgramme.getCourseList();
-                    System.out.println("\nAvailable courses for " + selectedProgramme.getProgrammeName() + ": ");
-                    for (int i = 0; i < availableCourses.size(); i++) {
-                        Course course = availableCourses.get(i);
-                        System.out.println((i + 1) + ". " + course.getCode() + " - " + course.getName());
-                    }
-
-                    ListInterface<Student> studentsInProgramme = selectedProgramme.getStudentList(); //here
-                    //if (studentsInProgramme.isEmpty()) { //added 
-                    //System.out.println("No registered found in programme."); //added
-                    //} else { //added
-                    System.out.println("\nStudents in " + selectedProgramme.getProgrammeName() + ": ");
-                    for (int i = 0; i < studentsInProgramme.size(); i++) {
-                        Student student = studentsInProgramme.get(i);
-                        System.out.println((i + 1) + ". " + student.getName());
-                    }
-                    //}
-                    //for (int i = 0; i < studentList.size(); i++) {
-                    //Student student = studentList.get(i);
-                    //System.out.println(student.getStudentID() + "\t" + student.getName() + "\t" + student.getIC() + "\t" + student.getContact_number() + "\t" + student.getProgramme());
-                    //}
-                    int studentChoice;
-                    while (true) {
-                        try {
-                            System.out.println("Select a student(enter the index number): ");
-                            studentChoice = Integer.parseInt(scanner.nextLine());
-
-                            if (studentChoice < 1 || studentChoice > studentsInProgramme.size()) {
-                                System.out.println("Invalid student choice");
-                                continue;
-                            }
-                            break;
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid input. Please enter a valid integer.");
-                        }
-                    }
-
-                    Student selectedStudent = studentsInProgramme.get(studentChoice - 1);
-
-                    while (true) {
-                        System.out.println("\nEnter course code: ");
-                        String courseCode = scanner.nextLine();
-
-                        //validate course code
-                        boolean isValidCourseCode = false;
+                    if (!availableCourses.isEmpty()) {
+                        System.out.println("\nAvailable courses for " + selectedProgramme.getProgrammeName() + ": ");
                         for (int i = 0; i < availableCourses.size(); i++) {
                             Course course = availableCourses.get(i);
-                            if (course.getCode().equalsIgnoreCase(courseCode)) {
-                                isValidCourseCode = true;
+                            System.out.println((i + 1) + ". " + course.getCode() + " - " + course.getName());
+                        }
+
+                        ListInterface<Student> studentsInProgramme = selectedProgramme.getStudentList(); //here
+                        //if (studentsInProgramme.isEmpty()) { //added 
+                        //System.out.println("No registered found in programme."); //added
+                        //} else { //added
+                        System.out.println("\nStudents in " + selectedProgramme.getProgrammeName() + ": ");
+                        for (int i = 0; i < studentsInProgramme.size(); i++) {
+                            Student student = studentsInProgramme.get(i);
+                            System.out.println((i + 1) + ". " + student.getName());
+                        }
+                        //}
+                        //for (int i = 0; i < studentList.size(); i++) {
+                        //Student student = studentList.get(i);
+                        //System.out.println(student.getStudentID() + "\t" + student.getName() + "\t" + student.getIC() + "\t" + student.getContact_number() + "\t" + student.getProgramme());
+                        //}
+                        int studentChoice;
+                        while (true) {
+                            try {
+                                System.out.println("Select a student(enter the index number): ");
+                                studentChoice = Integer.parseInt(scanner.nextLine());
+
+                                if (studentChoice < 1 || studentChoice > studentsInProgramme.size()) {
+                                    System.out.println("Invalid student choice");
+                                    continue;
+                                }
                                 break;
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input. Please enter a valid integer.");
                             }
                         }
 
-                        if (!isValidCourseCode) {
-                            System.out.println("Invalid course code. Please enter a course from the available courses list.");
-                            continue;
-                        }
+                        Student selectedStudent = studentsInProgramme.get(studentChoice - 1);
 
-                        // Check if the student is already registered for the course
-                        boolean alreadyRegisteredForCourse = false;
-                        ListInterface<RegisteredCourse> studentRegisteredCourses = selectedStudent.getRegisteredCourses();
-                        for (int i = 0; i < studentRegisteredCourses.size(); i++) {
-                            RegisteredCourse registeredCourse = studentRegisteredCourses.get(i);
-                            if (registeredCourse.getCode().equals(courseCode)) {
-                                alreadyRegisteredForCourse = true;
+                        while (true) {
+                            System.out.println("\nEnter course code: ");
+                            String courseCode = scanner.nextLine();
+
+                            //validate course code
+                            boolean isValidCourseCode = false;
+                            for (int i = 0; i < availableCourses.size(); i++) {
+                                Course course = availableCourses.get(i);
+                                if (course.getCode().equalsIgnoreCase(courseCode)) {
+                                    isValidCourseCode = true;
+                                    break;
+                                }
+                            }
+
+                            if (!isValidCourseCode) {
+                                System.out.println("Invalid course code. Please enter a course from the available courses list.");
+                                continue;
+                            }
+
+                            // Check if the student is already registered for the course
+                            boolean alreadyRegisteredForCourse = false;
+                            ListInterface<RegisteredCourse> studentRegisteredCourses = selectedStudent.getRegisteredCourses();
+                            for (int i = 0; i < studentRegisteredCourses.size(); i++) {
+                                RegisteredCourse registeredCourse = studentRegisteredCourses.get(i);
+                                if (registeredCourse.getCode().equals(courseCode)) {
+                                    alreadyRegisteredForCourse = true;
+                                    break;
+                                }
+                            }
+
+                            if (alreadyRegisteredForCourse) {
+                                System.out.println("Student is already registered for course " + courseCode + ". Please enter another course.");
+                                continue;
+                            }
+
+                            // Proceed with adding the course
+                            System.out.println("\nEnter status (Main, Elective, Resit, Repeat): ");
+                            String status = scanner.nextLine();
+
+                            // Validate status
+                            if (!(status.equals("Main") || status.equals("Elective") || status.equals("Resit") || status.equals("Repeat"))) {
+                                System.out.println("Invalid status. Please enter 'Main', 'Elective', 'Resit', or 'Repeat'.");
+                                continue;
+                            }
+
+                            // Convert the first letter to uppercase
+                            status = status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase();
+
+                            RegisteredCourse registerCourse = new RegisteredCourse(selectedStudent.getStudentID(), courseCode, status);
+                            boolean success = ManageRegistered.addRegistered(registerCourse);
+                            if (success) {
+                                System.out.println("Registration successfully added.");
+                            }
+
+                            System.out.println("\nDo you want to add another course? (yes/no)");
+                            String continueChoice = scanner.nextLine().toLowerCase();
+                            if (continueChoice.equals("no")) {
                                 break;
                             }
                         }
-
-                        if (alreadyRegisteredForCourse) {
-                            System.out.println("Student is already registered for course " + courseCode + ". Please enter another course.");
-                            continue;
-                        }
-
-                        // Proceed with adding the course
-                        System.out.println("\nEnter status (Main, Elective, Resit, Repeat): ");
-                        String status = scanner.nextLine();
-
-                        // Validate status
-                        if (!(status.equals("Main") || status.equals("Elective") || status.equals("Resit") || status.equals("Repeat"))) {
-                            System.out.println("Invalid status. Please enter 'Main', 'Elective', 'Resit', or 'Repeat'.");
-                            continue;
-                        }
-
-                        // Convert the first letter to uppercase
-                        status = status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase();
-
-                        RegisteredCourse registerCourse = new RegisteredCourse(selectedStudent.getStudentID(), courseCode, status);
-                        boolean success = ManageRegistered.addRegistered(registerCourse);
-                        if (success) {
-                            System.out.println("Registration successfully added.");
-                        }
-
-                        System.out.println("\nDo you want to add another course? (yes/no)");
-                        String continueChoice = scanner.nextLine().toLowerCase();
-                        if (continueChoice.equals("no")) {
-                            break;
-                        }
+                        System.out.println("---------------------------");
+                        System.out.println("Courses added successfully.");
+                        System.out.println("---------------------------");
+                    } else {
+                        System.out.println("There is no available courses for this programme.");
                     }
-
-                    System.out.println("---------------------------");
-                    System.out.println("Courses added successfully.");
-                    System.out.println("---------------------------");
                     break;
 
                 case 7:
@@ -429,39 +433,49 @@ public class StudentRegistration {
                         Student stud = studentList.get(i);
                         System.out.println((i + 1) + ". " + stud.getStudentID() + " - " + stud.getName());
                     }
-                    System.out.println("Enter the student ID(enter the index number): ");
-                    int studentIdToRemoveCourse = scanner.nextInt();
-                    scanner.nextLine();
+                    int studentIdToRemoveCourse;
+                    while (true) {
+                        try {
+                            System.out.println("Enter the student ID(enter the index number): ");
+                            studentIdToRemoveCourse = Integer.parseInt(scanner.nextLine());
+                            if (studentIdToRemoveCourse < 1 || studentIdToRemoveCourse > studentList.size()) {
+                                System.out.println("Invalid student ID. Please enter a valid index.");
+                                continue;
+                            }
+                            break;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid option. Please enter a valid integer.");
+                        }
+                    }
 
                     // Display the courses the student is registered for
                     ListInterface<RegisteredCourse> registeredCourses = ManageRegistered.getRegisteredCoursesForStudent(studentIdToRemoveCourse);
                     if (!registeredCourses.isEmpty()) {
                         System.out.println("Courses registered for student ID " + studentIdToRemoveCourse + ": ");
                         for (int i = 0; i < registeredCourses.size(); i++) {
-                            {
-                                RegisteredCourse course = registeredCourses.get(i);
-                                System.out.println((i + 1) + ". " + course.getCode() + ", Status: " + course.getStatus());
-                            }
+                            RegisteredCourse course = registeredCourses.get(i);
+                            System.out.println((i + 1) + ". " + course.getCode() + ", Status: " + course.getStatus());
                         }
 
                         // Prompt for the course to remove
-                        System.out.println("Enter the index of the course to remove: ");
-                        int courseIndexToRemove = scanner.nextInt();
-                        scanner.nextLine();
-
-                        // Validate the course index
-                        if (courseIndexToRemove < 1 || courseIndexToRemove > registeredCourses.size()) {
-                            System.out.println("Invalid course index.");
-                            break;
+                        int courseIndexToRemove;
+                        while (true) {
+                            try {
+                                System.out.println("Enter the index of the course to remove: ");
+                                String courseIndexInput = scanner.nextLine();
+                                courseIndexToRemove = Integer.parseInt(courseIndexInput);
+                                if (courseIndexToRemove > 0 && courseIndexToRemove <= registeredCourses.size()) {
+                                    break; // Break out of the loop if the input is valid
+                                } else {
+                                    System.out.println("Invalid course index.");
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input. Please enter a valid integer.");
+                            }
                         }
 
                         // Remove the course from the student's record
                         removeRegisteredCourse(studentIdToRemoveCourse, courseIndexToRemove);
-//                        if (courseRemoved) {
-//                            System.out.println("Course " + courseCodeToRemove + " removed successfully.");
-//                        } else {
-//                            System.out.println("Course " + courseCodeToRemove + " could not be removed.");
-//                        }
                     } else {
                         System.out.println("No registered courses found for the student.");
                     }
@@ -485,20 +499,6 @@ public class StudentRegistration {
                     break;
 
                 case 9:
-                    System.out.println("\nCalculating Maximum Credit Hours...");
-                    System.out.printf("%-15s %-40s %-30s%n", "Student ID", "Student Name", "Maximum Credit Hours Allowed");
-                    System.out.println("-------------- ---------------------------------------- ------------------------------");
-
-                    for (int i = 0; i < studentList.size(); i++) {
-                        Student student = studentList.get(i);
-//                        int totalCreditHours = ManageStudent.calculateTotalCreditHours(student, courseList);
-                        int maxCreditHours = ManageStudent.calculateMaxCreditHours(student, programmeList);
-
-                        System.out.printf("%-15s %-50s %-30s%n", student.getStudentID(), student.getName(), maxCreditHours);
-                    }
-                    break;
-
-                case 10:
                     // Ask the user for filtering criteria
                     System.out.println("Enter filtering criteria:");
                     System.out.println("1. Minimum number of students");
@@ -546,10 +546,20 @@ public class StudentRegistration {
                     System.out.println("-----------------------------------------------------------------------------------------");
                     break;
 
-                case 11:
+                case 10:
                     // Ask the user for filtering criteria
-                    System.out.println("Enter the course status:");
-                    String status = scanner.nextLine(); // Consume newline character
+                    String status;
+                    while (true) {
+                        System.out.println("Enter the course status (Main, Elective, Resit, Repeat): ");
+                        status = scanner.nextLine().trim();
+
+                        if (!status.equalsIgnoreCase("Main") && !status.equalsIgnoreCase("Elective")
+                                && !status.equalsIgnoreCase("Resit") && !status.equalsIgnoreCase("Repeat")) {
+                            System.out.println("Invalid status. Please enter again.");
+                            continue;
+                        }
+                        break;
+                    }
 
                     System.out.println("\n                            Summary Report Students In Course                           ");
                     System.out.println("----------------------------------------------------------------------------------------- ");
