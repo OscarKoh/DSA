@@ -1,0 +1,214 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package control;
+
+/**
+ *
+ * @author OSCAR KOH YUNG QIN
+ */
+import Boundary.TeamManagementUI;
+import static Boundary.TeamManagementUI.getActualTeamList;
+import static Boundary.TeamManagementUI.readGroupPositionInput;
+import adt.ArrayList;
+import adt.ListInterface;
+import entity.Course;
+import entity.Programme;
+import entity.Student;
+import entity.Team;
+import entity.TutorialGroup;
+import init.DataInitializer;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.InputMismatchException;
+import java.util.Locale;
+import java.util.Scanner;
+
+public class TeamSummary1 {
+
+    ListInterface<Team> teamList = ManageTutorialTeam.getTeamList();
+
+    public void start() {
+        DataInitializer.initializeAllData();
+        ListInterface<Programme> programmeList = ManageProgramme.getProgrammeList();
+
+        Scanner scanner = new Scanner(System.in);
+        Programme program = TeamManagementUI.selectProgram(scanner, programmeList);
+        System.out.println("Will you like to view group with no teams? (yes/ no): ");
+        String ans = scanner.nextLine();
+
+//        int groupPosition = readGroupPositionInput(scanner, program);
+//        TutorialGroup selectedGroup = program.getGroupLists().get(groupPosition - 1);
+        displaySummaryReport(program);
+        displaySummaryDetails(ans.toUpperCase(), program);
+    }
+
+    private void displaySummaryDetails(String ans, Programme program) {
+        ListInterface<Team> actualTeamList = new ArrayList<>();
+        int counter = 0;
+
+        for (int i = 0; i < program.getGroupLists().size(); i++) {
+            TutorialGroup group = program.getGroupLists().get(i);
+            boolean hasTeams = !group.getTeamLists().isEmpty();
+            if ("NO".equalsIgnoreCase(ans) && !hasTeams) {
+                continue; // Skip this group if ans is "NO" and it has no teams
+            }
+
+            System.out.println("Tutorial Group: " + group.getGroupId());
+            for (int k = 0; k < program.getCourseList().size(); k++) {
+                Course course = program.getCourseList().get(k);
+                System.out.println("\nCourse: " + course.getCode() + "\t\tMax Team Size: " + course.getTeamSize());
+                // Loop through all of the teams
+                for (int p = 0; p < teamList.size(); p++) {
+                    Team team = teamList.get(p);
+                    if (team.getCourse().getCode().equals(course.getCode())
+                            && team.getTutorialGroup().getGroupId().equals(group.getGroupId())) {
+                        System.out.println("Team " + team.getTeamId() + "\t\tCurrent Team Size: " + team.getTeamMembers().size());
+                    }
+                }
+            }
+            System.out.println("\nTotal team: " + group.getTeamLists().size() + "\n");
+        }
+
+        System.out.println("\nTotal Course for this group: " + program.getCourseList().size());
+
+        System.out.println("\nCourse with highest team size: " + getHighestTeamSize(program).getName() + "(" + getHighestTeamSize(program).getTeamSize() + ")");
+        System.out.println("Course with lowest team size: " + getLowestTeamSize(program).getName() + "(" + getLowestTeamSize(program).getTeamSize() + ")\n");
+
+        highestTeamInCourse(program);
+
+    }
+
+    private void highestTeamInCourse(Programme program) {
+        int highestTeamNum = -1;
+        TutorialGroup highestGroup = null;
+        int teamNum = 0;
+
+        for (int i = 0; i < program.getCourseList().size(); i++) {
+            Course course = program.getCourseList().get(i);
+            for (int j = 0; j < program.getGroupLists().size(); j++) {
+                TutorialGroup group = program.getGroupLists().get(j);
+                for (int k = 0; k < group.getTeamLists().size(); k++) {
+                    //If the team have the same course 
+                    if (group.getTeamLists().get(k).getCourse().equals(course)) {
+                        teamNum++;
+                    }
+                }
+
+                if (teamNum > highestTeamNum) {
+                    highestTeamNum = teamNum;
+                    highestGroup = group;
+                }
+            }
+
+            System.out.println("Group with highest number of team in " + course.getName() + " : " + highestGroup.getGroupId() + "(" + highestTeamNum + ")");
+            highestTeamNum = -1;
+            highestGroup = null;
+            teamNum = 0;
+        }
+
+    }
+
+    private TutorialGroup getGroupWithHighestTeams(Programme program, Course course) {
+        int maxTeamCount = -1;
+        TutorialGroup highestGroup = null;
+        for (int i = 0; i < program.getGroupLists().size(); i++) {
+            TutorialGroup group = program.getGroupLists().get(i);
+            if (group.getTeamLists().size() > maxTeamCount) {
+                maxTeamCount = group.getTeamLists().size();
+                highestGroup = group;
+            }
+        }
+        return highestGroup;
+    }
+
+    private Course getHighestTeamSize(Programme program) {
+        int highest = 0;
+        Course highestCourse = null;
+        for (int i = 0; i < program.getCourseList().size(); i++) {
+            Course course = program.getCourseList().get(i);
+            if (course.getTeamSize() > highest) {
+                highest = course.getTeamSize();
+                highestCourse = course;
+            }
+        }
+
+        return highestCourse;
+    }
+
+    private Course getLowestTeamSize(Programme program) {
+        int lowest = 100;
+        Course lowestCourse = null;
+        for (int i = 0; i < program.getCourseList().size(); i++) {
+            Course course = program.getCourseList().get(i);
+            if (course.getTeamSize() < lowest) {
+                lowest = course.getTeamSize();
+                lowestCourse = course;
+            }
+        }
+
+        return lowestCourse;
+    }
+
+    private void reportDetails(Programme program, TutorialGroup group) {
+        System.out.println("Programme: " + program.getProgrammeName());
+        System.out.println("Tutorial Group: " + group.getGroupId());
+    }
+
+    private void displaySummaryReport(Programme program) {
+        System.out.println("========================================================================");
+        System.out.println("TUNKU ABDUL RAHMAN UNIVERSITY OF MANAGEMENT AND TECHNOLOGY");
+        System.out.println("\t\tASSIGNMENT TEAM MANAGEMENT SUBSYSTEM");
+        System.out.println("========================================================================\n");
+        System.out.println("\tTEAMS SUMMARY REPORT FOR " + program.getProgrammeName() + "\n");
+
+        displayCurrentDateTime();
+        //displaySummaryDetails():
+    }
+
+    private void displayCurrentDateTime() {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, dd-MM-yyyy HH:mm:ss");
+        String formattedDateTime = currentDateTime.format(formatter);
+
+        // Get the day of the week in the default locale
+        String dayOfWeek = currentDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
+
+        System.out.println("Generated By: " + formattedDateTime + "\n");
+    }
+
+//    private void displaySummaryDetails(ListInterface<Programme> programList, ListInterface<TutorialGroup> groupList, ListInterface<Team> teamList) {
+//        for (int i = 0; i < programList.size(); i++) {
+//            System.out.println("Program " + (i + 1) + ": " + programList.get(i).getProgrammeName());
+//            for (int j = 0; j < groupList.size(); j++) {
+//                System.out.println("Group " + (i + 1) + ": " + groupList.get(j).getGroupName());
+//                for (int k = 0; j < teamList.size(); k++) {
+//                    System.out.println("Team " + (i + 1) + ": " + teamList.get(j).getTeamName());
+//                    Team team = teamList.get(i);
+//                    for (int t = 0; j < team.getTeamMembers().size(); t++) {
+//                        System.out.println(team.getTeamMembers().get(t));
+//                    }
+//                }
+//                int countStudent = 0;
+//                countStudent = countStudentNoTeam(groupList.get(j));
+//                System.out.println("Number of student that does not have team: " + countStudent);
+//                System.out.println("Number of student: " + groupList.get(j).listStudents().size());
+//            }
+//        }
+//    }
+//
+//    private int countStudentNoTeam(TutorialGroup group) {
+//        int count = 0;
+//
+//        for (int i = 0; i < group.listStudents().size(); i++) {
+//            Student student = group.listStudents().get(i);
+//            if (student.getTeamLists() == null) {
+//                count++;
+//            }
+//        }
+//
+//        return count;
+//    }
+}
