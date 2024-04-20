@@ -1,0 +1,116 @@
+package control;
+
+import Boundary.TeamManagementUI;
+import static Boundary.TeamManagementUI.createTeam;
+import entity.Team;
+import entity.TutorialGroup;
+import entity.Student;
+import adt.ArrayList;
+import adt.ListInterface;
+import entity.Course;
+import entity.Programme;
+import java.util.Iterator;
+import java.util.Scanner;
+
+public class ManageTutorialTeam {
+
+    private static ListInterface<Team> teamList = new ArrayList<>();
+
+    public static ListInterface<Team> getTeamList() {
+        return teamList;
+    }
+
+    public static void createTeam(Team team, TutorialGroup tutorialGroup, Course course) {
+        team.setTutorialGroup(tutorialGroup);
+        team.setCourse(course);
+
+        boolean teamExists = false;
+
+        // Check if the team already exists in the list
+        for (int i = 0; i < teamList.size(); i++) {
+            if (teamList.get(i).getTeamId().equals(team.getTeamId())) {
+                teamExists = true;
+                break;
+            }
+        }
+
+        // If the team doesn't exist, add it to the lists
+        if (!teamExists) {
+            tutorialGroup.getTeamLists().add(team);
+            course.getTeamLists().add(team);
+            teamList.add(team);
+        }
+    }
+
+    public static void removeTeam(Team teamToRemoved, TutorialGroup tutorialGroup, Course course) {
+        //Remove students from the team (Remove from the last students)
+        for (int i = teamToRemoved.getTeamMembers().size() - 1; i >= 0; i--) {
+            ManageStudentTeam.removeStudentFromTeam(teamToRemoved.getTeamMembers().get(i), teamToRemoved, i);
+        }
+
+        //Remove the team from the tutorial group
+        for (int j = 0; j < tutorialGroup.getTeamLists().size(); j++) {
+            if (tutorialGroup.getTeamLists().get(j).equals(teamToRemoved)) {
+                tutorialGroup.getTeamLists().remove(j);
+            }
+        }
+
+        //Remove the team from the related course 
+        for (int k = 0; k < course.getTeamLists().size(); k++) {
+            if (course.getTeamLists().get(k).equals(teamToRemoved)) {
+                course.getTeamLists().remove(k);
+            }
+        }
+
+        //Remove the team from the list
+        for (int p = 0; p < teamList.size(); p++) {
+            if (teamToRemoved.equals(teamList.get(p))) {
+                teamList.remove(p);
+            }
+        }
+
+    }
+
+    public static void listTeams(TutorialGroup selectedGroup) {
+        if (selectedGroup.getTeamLists().isEmpty()) {
+            System.out.println("\nCurrently no teams for " + selectedGroup.getGroupId());
+        } else {
+            System.out.println("\nTeams for each course in " + selectedGroup.getGroupId());
+            Programme program = selectedGroup.getProgramme();
+
+            //List out all the course of the group
+            for (int i = 0; i < program.getCourseList().size(); i++) {
+                Course course = program.getCourseList().get(i);
+                System.out.println("");
+                System.out.println(i + 1 + ". " + course.getName());
+                //Get teams that belongs to the tutorial group and the related course 
+                ListInterface<Team> actualteamList = TeamManagementUI.getActualTeamList(course, selectedGroup);
+                if (actualteamList.size() == 0) {
+                    System.out.println("Currently no teams avaialble for this couse.");
+                } else {
+                    //list out all the teams of the course
+                    for (int j = 0; j < actualteamList.size(); j++) {
+                        System.out.println(actualteamList.get(j));
+                    }
+                }
+            }
+        }
+    }
+
+    public static void mergeTeams(int team1Position, int team2Position, Course selectedCourse, Scanner scanner, TutorialGroup selectedGroup, ListInterface<Team> actualTeamList) {
+        Team selectedTeam1 = actualTeamList.get(team1Position - 1);
+        Team selectedTeam2 = actualTeamList.get(team2Position - 1);
+
+        //Create a new team to store the merged team
+        Team newTeam = TeamManagementUI.createTeam(scanner, teamList);
+
+        // Merge the new team with the selected teams
+        newTeam.getTeamMembers().mergeLists(selectedTeam1.getTeamMembers());
+        newTeam.getTeamMembers().mergeLists(selectedTeam2.getTeamMembers());
+
+        removeTeam(selectedTeam1, selectedGroup, selectedCourse);
+        removeTeam(selectedTeam2, selectedGroup, selectedCourse);
+
+        createTeam(newTeam, selectedGroup, selectedCourse);
+    }
+}
