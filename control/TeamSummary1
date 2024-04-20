@@ -31,7 +31,6 @@ public class TeamSummary1 {
     ListInterface<Team> teamList = ManageTutorialTeam.getTeamList();
 
     public void start() {
-        DataInitializer.initializeAllData();
         ListInterface<Programme> programmeList = ManageProgramme.getProgrammeList();
 
         Scanner scanner = new Scanner(System.in);
