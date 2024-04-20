@@ -9,13 +9,9 @@ import java.util.logging.Logger;
 
 public class courseDAO {
 
-    private final String fileName;
+    private static String fileName = "courses.txt";
 
-    public courseDAO(String fileName) {
-        this.fileName = fileName;
-    }
-
-     public void saveToFile(ListInterface<Course> courseList) {
+    public static void saveToFile(ListInterface<Course> courseList) {
         File file = new File(fileName);
         try {
             if (!file.exists()) {
@@ -30,7 +26,7 @@ public class courseDAO {
         }
     }
 
-    public ListInterface<Course> retrieveFromFile() {
+    public static ListInterface<Course> retrieveFromFile() {
         ListInterface<Course> courseList = new ArrayList<>();
         File file = new File(fileName);
         try (ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream(file))) {
