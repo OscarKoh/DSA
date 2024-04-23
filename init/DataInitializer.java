@@ -184,15 +184,13 @@ public class DataInitializer {
         String[] stuProgramme = { // Change to array of programme codes
             "RBF", "RSW", "RDS", "RET",
             "RES", "RRT", "DLS", "DMT", "DMA",
-            "DME", "RRM", 
-            "RAC", 
-            "RAC", "RAC", "RAC", "RAC", "RAC", "RAC", "RAC", "RAC",
+            "DME", "RRM", "RBF", "RBF", "RSW", "RET", "DMA",
+            "RAC", "RAC", "RAC", "RAC",
             "RAC", "RAC", "RAC", "RAC", "RAC", "RAC", "RAC", "RAC",
             "RAC", "RAC", "RAC", "RAC", "RAC", "RAC", "RAC", "RAC",
             "RAC", "RAC", "RAC", "RAC", "RAC", "RAC", "RAC", "RAC",
             "RAC", "RAC", "RAC", "RAC", "RAC", "RAC", "RAC", "RAC",
             "RAC", "RAC", "RAC", "RAC", "RAC", "RAC", "RAC", "RAC"
-
         };
 
         for (int i = 0; i < stuname.length; i++) {
@@ -245,7 +243,7 @@ public class DataInitializer {
         ListInterface<Student> studentList = ManageStudent.getStudentList();
         ListInterface<TutorialGroup> groupList = ManageTutorialGroup.getGroupList();
 
-        for (int i = 12; i < studentList.size(); i++) {
+        for (int i = 16; i < studentList.size(); i++) {
             if (i < 25) {
                 ManageTutorialGroup.addStudentsToTutorialGroup(groupList.get(0), studentList.get(i));
             } else if (i >= 25 && i < 51) {
