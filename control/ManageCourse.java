@@ -242,9 +242,7 @@ public class ManageCourse {
                 }
             }
             System.out.println(courseTypesString);
-        } else {
-            System.out.println("No Course Type specified.");
-        }
+        } 
         System.out.println("Credit Hour: " + course.getCreditHour());
         System.out.printf("Course Fee : RM%.2f\n", course.getFee()); // Format fee with 2 decimal places
     }
