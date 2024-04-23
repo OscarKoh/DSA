@@ -56,7 +56,7 @@ public class StudentRegistration {
             scanner.nextLine(); // Consume newline
 
             switch (option) {
-                case 1:
+                                case 1:
                     //add student
                     int id;
                     String name,
@@ -105,20 +105,23 @@ public class StudentRegistration {
                             break;
                         }
 
-                        System.out.println("Available programs:");
+                        System.out.println("\nAvailable programs:");
                         for (int i = 0; i < programmeList.size(); i++) {
                             Programme Programme = programmeList.get(i);
                             System.out.println(Programme.getProgrammeCode() + " - " + Programme.getProgrammeName());
                         }
 
-                        // Prompt for programme code
-                        System.out.println("Enter programme code: ");
-                        programme = scanner.nextLine();
+                        while (true) {
+                            System.out.println("Enter programme code: ");
+                            programme = scanner.nextLine();
 
-                        if (!validateProgrammeCode(programme, programmeList)) {
-                            System.out.println("Invalid programme code. Please try again.");
-                            continue;
+                            if (!validateProgrammeCode(programme, programmeList)) {
+                                System.out.println("Invalid programme code. Please try again.");
+                                continue;
+                            }
+                            break;
                         }
+                        // Prompt for programme code
 
                         // Create and return a new Student object
                         boolean success = addStudent(id, name, IC, contact_number, programme);
