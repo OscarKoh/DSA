@@ -528,6 +528,8 @@ public class StudentRegistration {
                             System.out.println("Invalid choice.");
                             break;
                     }
+                    System.out.println("               TUNKU ABDUL RAHMAN UNIVERSITY OF MANAGEMENT AND TECHNOLOGY");
+                    System.out.println("=========================================================================================");
                     System.out.println("\n                   Summary Report Students In Programme                                ");
                     System.out.println("----------------------------------------------------------------------------------------");
                     System.out.printf("%-50s  %-20s  %-20s%n", "Programme Name", "Number of Students", "Total Courses");
@@ -563,7 +565,8 @@ public class StudentRegistration {
                         }
                         break;
                     }
-
+                    System.out.println("               TUNKU ABDUL RAHMAN UNIVERSITY OF MANAGEMENT AND TECHNOLOGY");
+                    System.out.println("==========================================================================================");
                     System.out.println("\n                            Summary Report Students In Course                           ");
                     System.out.println("----------------------------------------------------------------------------------------- ");
                     System.out.printf("%-15s  %-50s  %-20s%n", "Course Code", "Course Name", "Number of Students");
