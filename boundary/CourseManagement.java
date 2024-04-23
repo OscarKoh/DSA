@@ -626,7 +626,7 @@ public class CourseManagement {
                                                     invalidType = false;
                                                     if (newTypesList.isEmpty()) {
                                                         invalidType = true;
-                                                        System.out.println("Invalid course types. Please enter valid course types.");
+                                                        System.out.println("Invalid input. Course type must be within lecture, tutorial, or practical.");
                                                     }
 
                                                 } while (invalidType);
