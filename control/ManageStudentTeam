@@ -26,6 +26,7 @@ public class ManageStudentTeam {
             student.getTeamLists().add(team);
             team.getTeamMembers().add(student); // Add the student to the team's student list
             teamMembers.add(student);
+            System.out.println(student.getName() + " has been added succesfully into the team.");
         }
     }
 
@@ -54,8 +55,9 @@ public class ManageStudentTeam {
             }
         }
 
+        System.out.println("Student removed succesffuly.");
     }
-    
+
     public static void listTeamStudents(Team team) {
         if (team.getTeamMembers().isEmpty()) {
             System.out.println("\nCurrently no students available for " + team.getTeamId());
