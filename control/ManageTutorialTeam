@@ -39,10 +39,12 @@ public class ManageTutorialTeam {
             tutorialGroup.getTeamLists().add(team);
             course.getTeamLists().add(team);
             teamList.add(team);
+            System.out.println("Team created succesfully.");
         }
     }
 
     public static void removeTeam(Team teamToRemoved, TutorialGroup tutorialGroup, Course course) {
+
         //Remove students from the team (Remove from the last students)
         for (int i = teamToRemoved.getTeamMembers().size() - 1; i >= 0; i--) {
             ManageStudentTeam.removeStudentFromTeam(teamToRemoved.getTeamMembers().get(i), teamToRemoved, i);
@@ -68,6 +70,8 @@ public class ManageTutorialTeam {
                 teamList.remove(p);
             }
         }
+
+        System.out.println("Team removed successfully");
 
     }
 
@@ -112,5 +116,6 @@ public class ManageTutorialTeam {
         removeTeam(selectedTeam2, selectedGroup, selectedCourse);
 
         createTeam(newTeam, selectedGroup, selectedCourse);
+        System.out.println(" Team merge successfully.");
     }
 }
