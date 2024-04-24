@@ -29,7 +29,6 @@ public class TeamSummary2 {
         ListInterface<Programme> programmeList = ManageProgramme.getProgrammeList();
         ListInterface<Team> teamList = ManageTutorialTeam.getTeamList();
         ListInterface<Student> memberList = ManageStudentTeam.getTeamMembers();
-        //ListInterface<Student> studentList = ManageTutorialGroup.getStudentList();
         ListInterface<Student> studentList = ManageStudent.getStudentList();
 
         Scanner scanner = new Scanner(System.in);
@@ -69,7 +68,6 @@ public class TeamSummary2 {
     }
 
     public void displaySummaryDetails(String ans, Programme program, String ans2, ListInterface<Student> studentList) {
-        //System.out.println("Total number of student for " + program.getProgrammeName() + " : " + getProgramStudent(studentList, program));
 
         // List group
         for (int i = 0; i < program.getGroupLists().size(); i++) {
