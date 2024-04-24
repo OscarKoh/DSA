@@ -4,6 +4,7 @@
  */
 package control;
 
+import DAO.tutorialDAO;
 import adt.ListInterface;
 import entity.Programme;
 import entity.TutorialGroup;
@@ -18,10 +19,10 @@ import entity.Student;
 public class ManageTutorialGroup {
 
     private static ListInterface<Programme> programList = ManageProgramme.getProgrammeList();
-    private static ListInterface<TutorialGroup> groupList = new ArrayList<>();
+    private static ArrayList<TutorialGroup> groupList = new ArrayList<>();
     private static ListInterface<Student> studentList = new ArrayList<>();
 
-    public static ListInterface<TutorialGroup> getGroupList() {
+    public static ArrayList<TutorialGroup> getGroupList() {
         return groupList;
     }
 
@@ -30,7 +31,6 @@ public class ManageTutorialGroup {
     }
 
 //    • Add a tutorial group to a programme 
-//Adding students to a tutorial group 
     public static void addTutorialGroup(TutorialGroup group, Programme program) {
         boolean groupExists = false;
 
@@ -45,6 +45,7 @@ public class ManageTutorialGroup {
             group.setProgramme(program);
             program.getGroupLists().add(group);
             groupList.add(group);
+            tutorialDAO.saveToFile(groupList);
         }
 
     }
