@@ -58,43 +58,38 @@ public class TeamManagementUI {
             switch (choice) {
                 case 1:
                     //Create team 
-                    //1. List program and select one
                     program = selectProgram(scanner, programmeList);
-
-                    //2. List group of the selected program and select one group
-                    groupPosition = readGroupPositionInput(scanner, program);
-                    selectedGroup = program.getGroupLists().get(groupPosition - 1);
-
-                    //3. List courses taken by the selected group and select a course to create teams 
-                    coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
-                    selectedCourse = selectedGroup.getProgramme().getCourseList().get(coursePosition - 1);
-
-                    //5. Set team size for the course (if haven't set yet)
-                    setTeamSizeForCourse(scanner, selectedCourse);
-
-                    //6. Create teams 
-                    createTeams(scanner, selectedGroup, selectedCourse, teamList);
+                    if (program != null) {
+                        groupPosition = readGroupPositionInput(scanner, program);
+                        if (groupPosition != -1) {
+                            selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                            coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                            if (coursePosition != -1) {
+                                selectedCourse = selectedGroup.getProgramme().getCourseList().get(coursePosition - 1);
+                                setTeamSizeForCourse(scanner, selectedCourse);
+                                createTeams(scanner, selectedGroup, selectedCourse, teamList);
+                            }
+                        }
+                    }
 
                     break;
 
                 case 2:
                     //Remove team 
-                    //1. List program and select one
                     program = selectProgram(scanner, programmeList);
-
-                    //2. List group of the selected program and select one group
-                    groupPosition = readGroupPositionInput(scanner, program);
-                    if (groupPosition != -1) {
-                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
-                        coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
-                        if (coursePosition != -1) {
-                            selectedCourse = program.getCourseList().get(coursePosition - 1);
-                            //Get the actual team list of the selected course for the selected group 
-                            actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
-                            teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
-                            if (teamPosition != -1) {
-                                selectedTeam = actualTeamList.get(teamPosition - 1);
-                                ManageTutorialTeam.removeTeam(selectedTeam, selectedGroup, selectedCourse);
+                    if (program != null) {
+                        groupPosition = readGroupPositionInput(scanner, program);
+                        if (groupPosition != -1) {
+                            selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                            coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                            if (coursePosition != -1) {
+                                selectedCourse = program.getCourseList().get(coursePosition - 1);
+                                actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
+                                teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
+                                if (teamPosition != -1) {
+                                    selectedTeam = actualTeamList.get(teamPosition - 1);
+                                    ManageTutorialTeam.removeTeam(selectedTeam, selectedGroup, selectedCourse);
+                                }
                             }
                         }
                     }
@@ -102,22 +97,20 @@ public class TeamManagementUI {
 
                 case 3:
                     //Amend team details 
-
-                    // 1. List program and select one validProgramSelection = false;
                     program = selectProgram(scanner, programmeList);
-
-                    //2. List group of the selected program and select one group
-                    groupPosition = readGroupPositionInput(scanner, program);
-                    if (groupPosition != -1) {
-                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
-                        coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
-                        if (coursePosition != -1) {
-                            selectedCourse = program.getCourseList().get(coursePosition - 1);
-                            actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
-                            teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
-                            if (teamPosition != -1) {
-                                selectedTeam = actualTeamList.get(teamPosition - 1);
-                                amendTeamDetails(scanner, selectedTeam, teamList);
+                    if (program != null) {
+                        groupPosition = readGroupPositionInput(scanner, program);
+                        if (groupPosition != -1) {
+                            selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                            coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                            if (coursePosition != -1) {
+                                selectedCourse = program.getCourseList().get(coursePosition - 1);
+                                actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
+                                teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
+                                if (teamPosition != -1) {
+                                    selectedTeam = actualTeamList.get(teamPosition - 1);
+                                    amendTeamDetails(scanner, selectedTeam, teamList);
+                                }
                             }
                         }
                     }
@@ -127,53 +120,53 @@ public class TeamManagementUI {
                 case 4:
                     //Add students into team 
                     program = selectProgram(scanner, programmeList);
-
-                    //2. List group of the selected program and select one group
-                    groupPosition = readGroupPositionInput(scanner, program);
-                    if (groupPosition != -1) {
-                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
-                        coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
-                        if (coursePosition != -1) {
-                            selectedCourse = program.getCourseList().get(coursePosition - 1);
-                            actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
-                            teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
-                            if (teamPosition != -1) {
-                                selectedTeam = actualTeamList.get(teamPosition - 1);
-                                //Find the selected student Id
-                                selectedStudentId = availableStudents(selectedGroup, selectedTeam, scanner, selectedCourse, groupStudents);
-                                if (selectedStudentId != -1) {
-                                    //List all student in the tutorial group to find the selected student 
-                                    for (int i = 0; i < selectedGroup.getStudentLists().size(); i++) {
-                                        //if the student id = selected student id, add the student into the team 
-                                        if (selectedGroup.getStudentLists().get(i).getStudentID() == selectedStudentId) {
-                                            addStudentToTeam(selectedGroup.getStudentLists().get(i), selectedTeam);
+                    if (program != null) {
+                        groupPosition = readGroupPositionInput(scanner, program);
+                        if (groupPosition != -1) {
+                            selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                            coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                            if (coursePosition != -1) {
+                                selectedCourse = program.getCourseList().get(coursePosition - 1);
+                                actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
+                                teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
+                                if (teamPosition != -1) {
+                                    selectedTeam = actualTeamList.get(teamPosition - 1);
+                                    //Find the selected student Id
+                                    selectedStudentId = availableStudents(selectedGroup, selectedTeam, scanner, selectedCourse, groupStudents);
+                                    if (selectedStudentId != -1) {
+                                        //List all student in the tutorial group to find the selected student 
+                                        for (int i = 0; i < selectedGroup.getStudentLists().size(); i++) {
+                                            //if the student id = selected student id, add the student into the team 
+                                            if (selectedGroup.getStudentLists().get(i).getStudentID() == selectedStudentId) {
+                                                addStudentToTeam(selectedGroup.getStudentLists().get(i), selectedTeam);
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-
                     break;
 
                 case 5:
                     //Remove student 
                     program = selectProgram(scanner, programmeList);
-                    //2. List group of the selected program and select one group
-                    groupPosition = readGroupPositionInput(scanner, program);
-                    if (groupPosition != -1) {
-                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
-                        coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
-                        if (coursePosition != -1) {
-                            selectedCourse = program.getCourseList().get(coursePosition - 1);
-                            actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
-                            teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
-                            if (teamPosition != -1) {
-                                selectedTeam = actualTeamList.get(teamPosition - 1);
-                                studentPosition = readStudentPositionInput(scanner, selectedTeam, selectedCourse);
-                                if (studentPosition != -1) {
-                                    selectedStudent = selectedTeam.getTeamMembers().get(studentPosition - 1);
-                                    ManageStudentTeam.removeStudentFromTeam(selectedStudent, selectedTeam, studentPosition);
+                    if (program != null) {
+                        groupPosition = readGroupPositionInput(scanner, program);
+                        if (groupPosition != -1) {
+                            selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                            coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                            if (coursePosition != -1) {
+                                selectedCourse = program.getCourseList().get(coursePosition - 1);
+                                actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
+                                teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
+                                if (teamPosition != -1) {
+                                    selectedTeam = actualTeamList.get(teamPosition - 1);
+                                    studentPosition = readStudentPositionInput(scanner, selectedTeam, selectedCourse);
+                                    if (studentPosition != -1) {
+                                        selectedStudent = selectedTeam.getTeamMembers().get(studentPosition - 1);
+                                        ManageStudentTeam.removeStudentFromTeam(selectedStudent, selectedTeam, studentPosition);
+                                    }
                                 }
                             }
                         }
@@ -184,19 +177,20 @@ public class TeamManagementUI {
                 case 6:
                     //Merge Teams 
                     program = selectProgram(scanner, programmeList);
-                    //2. List group of the selected program and select one group
-                    groupPosition = readGroupPositionInput(scanner, program);
-                    if (groupPosition != -1) {
-                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
-                        coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
-                        if (coursePosition != -1) {
-                            selectedCourse = program.getCourseList().get(coursePosition - 1);
-                            actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
-                            canMerge = checkMerge(actualTeamList, selectedCourse);
-                            if (!canMerge) {
-                                System.out.println("Cannot merge teams. No suitable pairs found or combined size exceeds maximum team size.");
-                            } else {
-                                mergeTeams(selectedCourse, scanner, selectedGroup, actualTeamList);
+                    if (program != null) {
+                        groupPosition = readGroupPositionInput(scanner, program);
+                        if (groupPosition != -1) {
+                            selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                            coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                            if (coursePosition != -1) {
+                                selectedCourse = program.getCourseList().get(coursePosition - 1);
+                                actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
+                                canMerge = checkMerge(actualTeamList, selectedCourse);
+                                if (!canMerge) {
+                                    System.out.println("Cannot merge teams. No suitable pairs found or combined size exceeds maximum team size.");
+                                } else {
+                                    mergeTeams(selectedCourse, scanner, selectedGroup, actualTeamList);
+                                }
                             }
                         }
                     }
@@ -206,33 +200,33 @@ public class TeamManagementUI {
                 case 7:
                     //List teams 
                     program = selectProgram(scanner, programmeList);
-
-                    //2. List group of the selected program and select one group
-                    groupPosition = readGroupPositionInput(scanner, program);
-                    if (groupPosition != -1) {
-                        //Selected a group
-                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
-                        ManageTutorialTeam.listTeams(selectedGroup);
+                    if (program != null) {
+                        //2. List group of the selected program and select one group
+                        groupPosition = readGroupPositionInput(scanner, program);
+                        if (groupPosition != -1) {
+                            //Selected a group
+                            selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                            ManageTutorialTeam.listTeams(selectedGroup);
+                        }
                     }
-
                     break;
 
                 case 8:
                     //List students under a team
                     program = selectProgram(scanner, programmeList);
-
-                    //2. List group of the selected program and select one group
-                    groupPosition = readGroupPositionInput(scanner, program);
-                    if (groupPosition != -1) {
-                        selectedGroup = program.getGroupLists().get(groupPosition - 1);
-                        coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
-                        if (coursePosition != -1) {
-                            selectedCourse = program.getCourseList().get(coursePosition - 1);
-                            actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
-                            teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
-                            if (teamPosition != -1) {
-                                selectedTeam = actualTeamList.get(teamPosition - 1);
-                                ManageStudentTeam.listTeamStudents(selectedTeam);
+                    if (program != null) {
+                        groupPosition = readGroupPositionInput(scanner, program);
+                        if (groupPosition != -1) {
+                            selectedGroup = program.getGroupLists().get(groupPosition - 1);
+                            coursePosition = readCoursePositionInput(scanner, program, selectedGroup);
+                            if (coursePosition != -1) {
+                                selectedCourse = program.getCourseList().get(coursePosition - 1);
+                                actualTeamList = getActualTeamList(selectedCourse, selectedGroup);
+                                teamPosition = readTeamPositionInput(scanner, actualTeamList, selectedGroup, selectedCourse);
+                                if (teamPosition != -1) {
+                                    selectedTeam = actualTeamList.get(teamPosition - 1);
+                                    ManageStudentTeam.listTeamStudents(selectedTeam);
+                                }
                             }
                         }
                     }
@@ -425,7 +419,7 @@ public class TeamManagementUI {
                 }
             }
         }
-        
+
         if (availableStudentLists.isEmpty()) {
             System.out.println("No available students now.");
         } else {
@@ -439,19 +433,6 @@ public class TeamManagementUI {
             selectedStudentId = availableStudentLists.get(studentPosition - 1).getStudentID();
 
         }
-//        if (groupStudents.isEmpty()) {
-//            System.out.println("No available students now.");
-//        } else {
-//            System.out.println("Available students: ");
-//            for (int k = 0; k < groupStudents.size(); k++) {
-//                System.out.println((k + 1) + ". " + groupStudents.get(k));
-//            }
-//            System.out.println("\nSelect the student to be added: ");
-//            int studentPosition = scanner.nextInt();
-//
-//            selectedStudentId = groupStudents.get(studentPosition - 1).getStudentID();
-//
-//        }
 
         return selectedStudentId;
     }
@@ -476,6 +457,7 @@ public class TeamManagementUI {
         } while (duplicate); // Continue looping until a unique team ID is entered
 
         team.amendTeamDetails(newTeamId);
+        System.out.println("Team details updated succesfully.");
     }
 
     public static int readTeamPositionInput(Scanner scanner, ListInterface<Team> actualTeamList, TutorialGroup group, Course course) {
